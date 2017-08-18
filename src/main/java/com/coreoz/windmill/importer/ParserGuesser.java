@@ -1,18 +1,34 @@
 package com.coreoz.windmill.importer;
 
+import java.io.ByteArrayOutputStream;
+
 import org.assertj.core.util.Objects;
 
-import com.coreoz.windmill.importer.parser.ExcelParser;
+import com.coreoz.windmill.importer.parser.BinaryExcelParser;
+import com.coreoz.windmill.importer.parser.OpenXmlExcelParser;
 
-class ParserGuesser {
+public class ParserGuesser {
 
 	private static byte[] ZIP_FIRST_BYTES = {0x50, 0x4B};
+	private static byte[] XLS_FIRST_BYTES = fromIntArray(new int[]{ 0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1 });
 
-	static FileParser guess(FileSource fileSource) {
-		if(Objects.areEqualArrays(ZIP_FIRST_BYTES, fileSource.peek(2))) {
-			return new ExcelParser();
+	public static FileParser guess(FileSource fileSource) {
+		if(Objects.areEqualArrays(ZIP_FIRST_BYTES, fileSource.peek(ZIP_FIRST_BYTES.length))) {
+			return new OpenXmlExcelParser();
+		}
+		if(Objects.areEqualArrays(XLS_FIRST_BYTES, fileSource.peek(XLS_FIRST_BYTES.length))) {
+			return new BinaryExcelParser();
 		}
 		throw new IllegalArgumentException("Parser could be detected from " + fileSource);
+	}
+
+	private static byte[] fromIntArray(int[] values) {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		for (int i = 0; i < values.length; ++i) {
+			baos.write(values[i]);
+		}
+
+		return baos.toByteArray();
 	}
 
 }

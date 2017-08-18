@@ -15,31 +15,12 @@ Include Windmill in your project:
 ```
 
 ```
-Windmill
-	.newImport()
-	[.skip(nbLines)]
-	.map(row -> {
-		row.col(i)
-		row.col("name")
-		
-		return result;
-	})
-	.parse(Source.of(), [ParserFactory])
-	[.fetch()]
-	[.stream()]
-
-
+TODO see how to handle import report
 Import<Result> {
 	linesCount()
 	rows() : Row<Result> {
 		errors: 
 	}
 	errors:
-}
-
-
-Tuple {
-	col(i)	.asInt
-			.asString
 }
 ```
