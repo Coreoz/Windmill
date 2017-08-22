@@ -1,11 +1,10 @@
 package com.coreoz.windmill.importer.parser;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
-
-import com.coreoz.windmill.importer.FileSource;
 
 /**
  * Handles XLS files
@@ -13,8 +12,8 @@ import com.coreoz.windmill.importer.FileSource;
 public final class BinaryExcelParser extends BaseExcelParser {
 
 	@Override
-	protected Workbook openWorkbook(FileSource source) throws IOException {
-		return new HSSFWorkbook(source.toInputStream());
+	protected Workbook openWorkbook(InputStream sourceInputStream) throws IOException {
+		return new HSSFWorkbook(sourceInputStream);
 	}
 
 }

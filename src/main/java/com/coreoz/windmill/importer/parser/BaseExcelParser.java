@@ -1,6 +1,7 @@
 package com.coreoz.windmill.importer.parser;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Spliterators;
 import java.util.stream.Collectors;
@@ -20,7 +21,7 @@ import lombok.SneakyThrows;
 // TODO add options to select the tab to import
 public abstract class BaseExcelParser implements FileParser {
 
-	protected abstract Workbook openWorkbook(FileSource source) throws IOException;
+	protected abstract Workbook openWorkbook(InputStream sourceInputStream) throws IOException;
 
 	/**
 	 * @throws IOException
@@ -28,7 +29,7 @@ public abstract class BaseExcelParser implements FileParser {
 	@SneakyThrows
 	@Override
 	public Stream<Row> parse(FileSource source) {
-		Workbook workbook = openWorkbook(source);
+		Workbook workbook = openWorkbook(source.toInputStream());
 		Sheet sheet = workbook.getSheetAt(0);
 
 		return stream(new ExcelRowIterator(sheet.rowIterator()))
