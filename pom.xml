@@ -42,12 +42,12 @@
 
 	<distributionManagement>
 		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<id>interne</id>
+			<url>http://artifactory.coreoz.com/libs-snapshot-local</url>
 		</snapshotRepository>
 		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+			<id>interne</id>
+			<url>http://artifactory.coreoz.com/libs-release-local</url>
 		</repository>
 	</distributionManagement>
 
