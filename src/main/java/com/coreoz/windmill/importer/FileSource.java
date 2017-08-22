@@ -1,6 +1,7 @@
 package com.coreoz.windmill.importer;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import lombok.SneakyThrows;
@@ -28,6 +29,10 @@ public class FileSource {
 
 	public static FileSource of(InputStream inputStream) {
 		return new FileSource(inputStream);
+	}
+
+	public static FileSource of(byte[] inputData) {
+		return of(new ByteArrayInputStream(inputData));
 	}
 
 }
