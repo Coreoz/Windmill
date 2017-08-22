@@ -30,7 +30,8 @@ public class ExcelCell implements Cell {
 		if (value == null) {
 			return null;
 		}
-		return value.trim();
+		String valueTrimed = value.trim();
+		return valueTrimed.equals("") ? null : valueTrimed;
 	}
 
 	@Override
