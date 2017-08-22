@@ -1,8 +1,7 @@
 package com.coreoz.windmill.importer;
 
 import java.io.ByteArrayOutputStream;
-
-import org.assertj.core.util.Objects;
+import java.util.Arrays;
 
 import com.coreoz.windmill.importer.parser.BinaryExcelParser;
 import com.coreoz.windmill.importer.parser.OpenXmlExcelParser;
@@ -13,10 +12,10 @@ public class ParserGuesser {
 	private static byte[] XLS_FIRST_BYTES = fromIntArray(new int[]{ 0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1 });
 
 	public static FileParser guess(FileSource fileSource) {
-		if(Objects.areEqualArrays(ZIP_FIRST_BYTES, fileSource.peek(ZIP_FIRST_BYTES.length))) {
+		if(Arrays.equals(ZIP_FIRST_BYTES, fileSource.peek(ZIP_FIRST_BYTES.length))) {
 			return new OpenXmlExcelParser();
 		}
-		if(Objects.areEqualArrays(XLS_FIRST_BYTES, fileSource.peek(XLS_FIRST_BYTES.length))) {
+		if(Arrays.equals(XLS_FIRST_BYTES, fileSource.peek(XLS_FIRST_BYTES.length))) {
 			return new BinaryExcelParser();
 		}
 		throw new IllegalArgumentException("Parser could be detected from " + fileSource);
