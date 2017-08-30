@@ -18,7 +18,7 @@ public class ExcelRow implements Row {
 	}
 
 	@Override
-	public int index() {
+	public int rowIndex() {
 		return excelRow.getRowNum();
 	}
 

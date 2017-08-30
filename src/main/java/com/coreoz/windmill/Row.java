@@ -2,7 +2,10 @@ package com.coreoz.windmill;
 
 public interface Row extends Iterable<Cell> {
 
-	int index();
+	/**
+	 * Returns the current row index, starts at 0
+	 */
+	int rowIndex();
 
 	Cell cell(String columnName);
 
