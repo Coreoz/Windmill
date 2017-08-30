@@ -11,6 +11,17 @@ import org.apache.poi.ss.usermodel.Workbook;
  */
 public final class BinaryExcelParser extends BaseExcelParser {
 
+	public BinaryExcelParser() {
+	}
+
+	public BinaryExcelParser(Integer sheetIndex) {
+		super(sheetIndex);
+	}
+
+	public BinaryExcelParser(String sheetName) {
+		super(sheetName);
+	}
+
 	@Override
 	protected Workbook openWorkbook(InputStream sourceInputStream) throws IOException {
 		return new HSSFWorkbook(sourceInputStream);
