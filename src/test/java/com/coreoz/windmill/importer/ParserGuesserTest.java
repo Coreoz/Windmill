@@ -3,8 +3,8 @@ package com.coreoz.windmill.importer;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import com.coreoz.windmill.importer.parser.BinaryExcelParser;
-import com.coreoz.windmill.importer.parser.OpenXmlExcelParser;
+import com.coreoz.windmill.importer.parsers.excel.BinaryExcelParser;
+import com.coreoz.windmill.importer.parsers.excel.OpenXmlExcelParser;
 
 public class ParserGuesserTest {
 

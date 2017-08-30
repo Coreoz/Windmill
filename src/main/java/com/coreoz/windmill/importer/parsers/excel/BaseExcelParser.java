@@ -1,4 +1,4 @@
-package com.coreoz.windmill.importer.parser;
+package com.coreoz.windmill.importer.parsers.excel;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,10 +11,10 @@ import java.util.stream.StreamSupport;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
-import com.coreoz.windmill.Row;
 import com.coreoz.windmill.importer.FileParser;
 import com.coreoz.windmill.importer.FileSchema;
 import com.coreoz.windmill.importer.FileSource;
+import com.coreoz.windmill.importer.ImportRow;
 
 import lombok.SneakyThrows;
 
@@ -52,7 +52,7 @@ public abstract class BaseExcelParser implements FileParser {
 	 */
 	@SneakyThrows
 	@Override
-	public Stream<Row> parse(FileSource source) {
+	public Stream<ImportRow> parse(FileSource source) {
 		Workbook workbook = openWorkbook(source.toInputStream());
 		Sheet sheet = selectSheet(workbook);
 
@@ -81,7 +81,7 @@ public abstract class BaseExcelParser implements FileParser {
 		return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, 0), false);
 	}
 
-	private static class ExcelRowIterator implements Iterator<Row> {
+	private static class ExcelRowIterator implements Iterator<ImportRow> {
 
 		private final Iterator<org.apache.poi.ss.usermodel.Row> rowIterator;
 		private FileSchema fileSchema;
@@ -97,18 +97,18 @@ public abstract class BaseExcelParser implements FileParser {
 		}
 
 		@Override
-		public Row next() {
+		public ImportRow next() {
 			org.apache.poi.ss.usermodel.Row nextExcelRow = rowIterator.next();
 
 			if (fileSchema == null) {
 				fileSchema = new FileSchema(
 					StreamSupport
-						.stream(Spliterators.spliteratorUnknownSize(ExcelRow.cellIterator(nextExcelRow), 0), false)
+						.stream(Spliterators.spliteratorUnknownSize(ExcelImportRow.cellIterator(nextExcelRow), 0), false)
 						.collect(Collectors.toList())
 				);
 			}
 
-			return new ExcelRow(nextExcelRow, fileSchema);
+			return new ExcelImportRow(nextExcelRow, fileSchema);
 		}
 
 	}

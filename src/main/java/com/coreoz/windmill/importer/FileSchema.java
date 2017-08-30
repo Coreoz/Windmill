@@ -5,14 +5,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.coreoz.windmill.Cell;
-
 public class FileSchema {
 
-	private final List<Cell> firstRowCells;
+	private final List<ImportCell> firstRowCells;
 	private final Map<String, Integer> columnNameToColumnIndex;
 
-	public FileSchema(List<Cell> firstRowCells) {
+	public FileSchema(List<ImportCell> firstRowCells) {
 		this.firstRowCells = firstRowCells;
 		this.columnNameToColumnIndex = new HashMap<>();
 	}
@@ -23,7 +21,7 @@ public class FileSchema {
 		}
 
 		for (int columnIndex = 0; columnIndex < firstRowCells.size(); columnIndex++) {
-			Cell cell = firstRowCells.get(columnIndex);
+			ImportCell cell = firstRowCells.get(columnIndex);
 			if (Objects.equals(columnName, cell.asString())) {
 				columnNameToColumnIndex.put(columnName, columnIndex);
 				return columnIndex;

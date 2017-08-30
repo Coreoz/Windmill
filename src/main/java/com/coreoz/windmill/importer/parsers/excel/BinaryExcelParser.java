@@ -1,4 +1,4 @@
-package com.coreoz.windmill.importer.parser;
+package com.coreoz.windmill.importer.parsers.excel;
 
 import java.io.IOException;
 import java.io.InputStream;
