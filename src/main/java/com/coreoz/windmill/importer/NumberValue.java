@@ -20,7 +20,7 @@ public class NumberValue<T> {
 
 	/**
 	 * Returns the value, may be null if the cell is empty.
-	 * See {@link #safeValue()} if you want to avoid any exception during the parsing step.
+	 * See {@link #safeValue()} to avoid any exception during the parsing step.
 	 * @throws NumberFormatException if the cell value is not a correct number
 	 */
 	public T value() {
@@ -30,6 +30,7 @@ public class NumberValue<T> {
 	/**
 	 * Returns the value, may be null if the cell is empty
 	 * or if the cell value could not be parsed into a number
+	 * See {@link #value()} to raise an exception if the value parsing 
 	 */
 	public T safeValue() {
 		return value == null ? null : parseNumber(stringValue, valueParser, false);
