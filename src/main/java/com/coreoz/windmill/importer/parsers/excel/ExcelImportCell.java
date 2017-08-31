@@ -62,8 +62,8 @@ public class ExcelImportCell implements ImportCell {
 		return toNumber(Function.identity(), Double::parseDouble);
 	}
 
-	private<T> NumberValue<T> toNumber(Function<Double, T> cast, Function<String, T> parser) {
-		return new NumberValue<>(tryGetValue(cast), richTextStringTrimmedValue(), parser);
+	private<T> NumberValue<T> toNumber(Function<Double, T> cast, Function<String, T> valueParser) {
+		return new NumberValue<>(tryGetValue(cast), richTextStringTrimmedValue(), valueParser);
 	}
 
 	private<T> T tryGetValue(Function<Double, T> cast) {
