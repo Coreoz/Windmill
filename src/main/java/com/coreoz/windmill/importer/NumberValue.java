@@ -19,7 +19,8 @@ public class NumberValue<T> {
 	}
 
 	/**
-	 * Returns the value, may be null if the cell is empty
+	 * Returns the value, may be null if the cell is empty.
+	 * See {@link #safeValue()} if you want to avoid any exception during the parsing step.
 	 * @throws NumberFormatException if the cell value is not a correct number
 	 */
 	public T value() {

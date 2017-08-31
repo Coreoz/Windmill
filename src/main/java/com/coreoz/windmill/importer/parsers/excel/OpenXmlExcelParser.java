@@ -11,6 +11,9 @@ public final class OpenXmlExcelParser extends BaseExcelParser {
 	public OpenXmlExcelParser() {
 	}
 
+	/**
+	 * @param sheetIndex the sheet index, starts at 0
+	 */
 	public OpenXmlExcelParser(Integer sheetIndex) {
 		super(sheetIndex);
 	}

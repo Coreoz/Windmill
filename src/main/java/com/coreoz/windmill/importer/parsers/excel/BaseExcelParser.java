@@ -32,6 +32,9 @@ public abstract class BaseExcelParser implements FileParser {
 		this(sheetName, null);
 	}
 
+	/**
+	 * @param sheetIndex the sheet index, starts at 0
+	 */
 	public BaseExcelParser(Integer sheetIndex) {
 		this(null, sheetIndex);
 	}

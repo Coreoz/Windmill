@@ -14,6 +14,9 @@ public final class BinaryExcelParser extends BaseExcelParser {
 	public BinaryExcelParser() {
 	}
 
+	/**
+	 * @param sheetIndex the sheet index, starts at 0
+	 */
 	public BinaryExcelParser(Integer sheetIndex) {
 		super(sheetIndex);
 	}
