@@ -1,9 +1,11 @@
 package com.coreoz.windmill.importer.parsers.excel;
 
+import java.util.function.Function;
+
 import org.apache.poi.ss.usermodel.CellType;
 
 import com.coreoz.windmill.importer.ImportCell;
-import com.coreoz.windmill.importer.parsers.NumberParser;
+import com.coreoz.windmill.importer.NumberValue;
 
 public class ExcelImportCell implements ImportCell {
 
@@ -41,35 +43,34 @@ public class ExcelImportCell implements ImportCell {
 	}
 
 	@Override
-	public Integer asInteger() {
-		if (excelCell.getCellTypeEnum() == CellType.NUMERIC) {
-			return (int) excelCell.getNumericCellValue();
-		}
-		return NumberParser.parseInt(richTextStringTrimmedValue(), false);
+	public NumberValue<Integer> asInteger() {
+		return toNumber(Double::intValue, Integer::parseInt);
 	}
 
 	@Override
-	public Long asLong() {
-		if (excelCell.getCellTypeEnum() == CellType.NUMERIC) {
-			return (long) excelCell.getNumericCellValue();
-		}
-		return NumberParser.parseLong(richTextStringTrimmedValue(), false);
+	public NumberValue<Long> asLong() {
+		return toNumber(Double::longValue, Long::parseLong);
 	}
 
 	@Override
-	public Float asFloat() {
-		if (excelCell.getCellTypeEnum() == CellType.NUMERIC) {
-			return (float) excelCell.getNumericCellValue();
-		}
-		return NumberParser.parseFloat(richTextStringTrimmedValue(), false);
+	public NumberValue<Float> asFloat() {
+		return toNumber(Double::floatValue, Float::parseFloat);
 	}
 
 	@Override
-	public Double asDouble() {
+	public NumberValue<Double> asDouble() {
+		return toNumber(Function.identity(), Double::parseDouble);
+	}
+
+	private<T> NumberValue<T> toNumber(Function<Double, T> cast, Function<String, T> parser) {
+		return new NumberValue<>(tryGetValue(cast), richTextStringTrimmedValue(), parser);
+	}
+
+	private<T> T tryGetValue(Function<Double, T> cast) {
 		if (excelCell.getCellTypeEnum() == CellType.NUMERIC) {
-			return (double) excelCell.getNumericCellValue();
+			return cast.apply(excelCell.getNumericCellValue());
 		}
-		return NumberParser.parseDouble(richTextStringTrimmedValue(), false);
+		return null;
 	}
 
 	private String richTextStringTrimmedValue() {

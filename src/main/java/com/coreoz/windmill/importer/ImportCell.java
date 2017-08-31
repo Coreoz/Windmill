@@ -9,12 +9,12 @@ public interface ImportCell {
 
 	String asString();
 
-	Integer asInteger();
+	NumberValue<Integer> asInteger();
 
-	Long asLong();
+	NumberValue<Long> asLong();
 
-	Float asFloat();
+	NumberValue<Float> asFloat();
 
-	Double asDouble();
+	NumberValue<Double> asDouble();
 
 }
