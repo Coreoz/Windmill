@@ -6,6 +6,8 @@ import org.apache.poi.ss.usermodel.CellType;
 
 import com.coreoz.windmill.importer.ImportCell;
 import com.coreoz.windmill.importer.NumberValue;
+import com.coreoz.windmill.importer.NumberValueWithDefault;
+import com.coreoz.windmill.utils.Strings;
 
 public class ExcelImportCell implements ImportCell {
 
@@ -24,17 +26,9 @@ public class ExcelImportCell implements ImportCell {
 	public String asString() {
 		if (excelCell.getCellTypeEnum() == CellType.NUMERIC) {
 			excelCell.setCellType(CellType.STRING);
-			return trim(excelCell.getStringCellValue());
+			return Strings.trimToNull(excelCell.getStringCellValue());
 		}
 		return richTextStringTrimmedValue();
-	}
-
-	private String trim(String value) {
-		if (value == null) {
-			return null;
-		}
-		String valueTrimed = value.trim();
-		return "".equals(valueTrimed) ? null : valueTrimed;
 	}
 
 	@Override
@@ -63,7 +57,7 @@ public class ExcelImportCell implements ImportCell {
 	}
 
 	private<T> NumberValue<T> toNumber(Function<Double, T> cast, Function<String, T> valueParser) {
-		return new NumberValue<>(tryGetValue(cast), richTextStringTrimmedValue(), valueParser);
+		return new NumberValueWithDefault<>(tryGetValue(cast), richTextStringTrimmedValue(), valueParser);
 	}
 
 	private<T> T tryGetValue(Function<Double, T> cast) {
@@ -74,7 +68,7 @@ public class ExcelImportCell implements ImportCell {
 	}
 
 	private String richTextStringTrimmedValue() {
-		return trim(excelCell.getRichStringCellValue().getString());
+		return Strings.trimToNull(excelCell.getRichStringCellValue().getString());
 	}
 
 }

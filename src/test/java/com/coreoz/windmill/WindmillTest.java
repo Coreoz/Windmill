@@ -2,9 +2,6 @@ package com.coreoz.windmill;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,32 +16,53 @@ import lombok.Value;
 
 public class WindmillTest {
 
-	public static void main(String[] args) throws FileNotFoundException {
-		Windmill
+	@Test
+	public void should_export_as_xlsx() {
+		byte[] xlsExport = Windmill
 			.export(Arrays.asList(
 				Import.of("1", "2", "3"),
 				Import.of("4", "5", "6")
 			))
 			.withMapping(new ExportMapping<Import>()
-				.add("sdf sdf sdf sqdf sqd fsqd fsq df", Import::getA)
+				.add("a", Import::getA)
 				.add("b", Import::getB)
 				.add("c", Import::getC)
 			)
 			.asExcel()
-			.writeTo(new FileOutputStream(new File("test.xlsx")));
+			.toByteArray();
+
+		tryParseFile(FileSource.of(xlsExport));
 	}
 
 	@Test
-	public void parse_basic_usage() {
+	public void should_parse_xls() {
+		tryParseFile("/import.xls");
+	}
+
+	@Test
+	public void should_parse_xlsx() {
+		tryParseFile("/import.xlsx");
+	}
+
+	@Test
+	public void should_parse_csv() {
+		tryParseFile("/import.csv");
+	}
+
+	private void tryParseFile(String name) {
+		tryParseFile(FileSource.of(ParserGuesserTest.class.getResourceAsStream(name)));
+	}
+
+	private void tryParseFile(FileSource fileSource) {
 		List<Import> result = Windmill
-			.parse(FileSource.of(ParserGuesserTest.class.getResourceAsStream("/import.xlsx")))
+			.parse(fileSource)
 			// do not parse the header line
 			.skip(1)
 			.map(row -> Import.of(
-				row.cell("a").asString(),
-				row.cell("b").asString(),
-				row.cell("c").asString()
-			))
+					row.cell("a").asString(),
+					row.cell("b").asString(),
+					row.cell("c").asString()
+					))
 			.collect(Collectors.toList());
 
 		assertThat(result).containsExactly(

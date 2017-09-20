@@ -2,19 +2,15 @@ package com.coreoz.windmill.importer.parsers.excel;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
-import java.util.Spliterators;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import com.coreoz.windmill.importer.FileParser;
-import com.coreoz.windmill.importer.FileSchema;
 import com.coreoz.windmill.importer.FileSource;
 import com.coreoz.windmill.importer.ImportRow;
+import com.coreoz.windmill.utils.IteratorStreams;
 
 import lombok.SneakyThrows;
 
@@ -59,13 +55,9 @@ public abstract class BaseExcelParser implements FileParser {
 		Workbook workbook = openWorkbook(source.toInputStream());
 		Sheet sheet = selectSheet(workbook);
 
-		return stream(new ExcelRowIterator(sheet.rowIterator()))
-			.onClose(() -> close(workbook));
-	}
-
-	@SneakyThrows
-	public static void close(AutoCloseable closeable) {
-		closeable.close();
+		return IteratorStreams
+			.stream(new ExcelRowIterator(sheet.rowIterator()))
+			.onClose(() -> IteratorStreams.close(workbook));
 	}
 
 	private Sheet selectSheet(Workbook workbook) {
@@ -73,47 +65,6 @@ public abstract class BaseExcelParser implements FileParser {
 			return workbook.getSheetAt(sheetIndex);
 		}
 		return workbook.getSheet(sheetName);
-	}
-
-	/**
-	 * Returns a sequential {@link Stream} of the remaining contents of
-	 * {@code iterator}. Do not use {@code iterator} directly after passing it to
-	 * this method.
-	 */
-	private static <T> Stream<T> stream(Iterator<T> iterator) {
-		return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, 0), false);
-	}
-
-	private static class ExcelRowIterator implements Iterator<ImportRow> {
-
-		private final Iterator<org.apache.poi.ss.usermodel.Row> rowIterator;
-		private FileSchema fileSchema;
-
-		public ExcelRowIterator(Iterator<org.apache.poi.ss.usermodel.Row> rowIterator) {
-			this.rowIterator = rowIterator;
-			this.fileSchema = null;
-		}
-
-		@Override
-		public boolean hasNext() {
-			return rowIterator.hasNext();
-		}
-
-		@Override
-		public ImportRow next() {
-			org.apache.poi.ss.usermodel.Row nextExcelRow = rowIterator.next();
-
-			if (fileSchema == null) {
-				fileSchema = new FileSchema(
-					StreamSupport
-						.stream(Spliterators.spliteratorUnknownSize(ExcelImportRow.cellIterator(nextExcelRow), 0), false)
-						.collect(Collectors.toList())
-				);
-			}
-
-			return new ExcelImportRow(nextExcelRow, fileSchema);
-		}
-
 	}
 
 }
