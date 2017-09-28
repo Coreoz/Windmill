@@ -1,8 +1,6 @@
 package com.coreoz.windmill.importer.parsers.csv;
 
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.stream.Stream;
 
@@ -15,27 +13,32 @@ import com.opencsv.CSVReaderBuilder;
 
 public class CsvParser implements FileParser {
 
-	private final Charset charset;
-	private final CSVParserBuilder csvParserConfiguration;
+	private final CsvParserConfiguration csvParserConfiguration;
 
 	public CsvParser() {
-		this(StandardCharsets.ISO_8859_1);
+		this(CsvParserConfiguration.builder().build());
 	}
 
-	public CsvParser(Charset charset) {
-		this(charset, new CSVParserBuilder());
-	}
-
-	public CsvParser(Charset charset, CSVParserBuilder csvParserConfiguration) {
-		this.charset = charset;
+	public CsvParser(CsvParserConfiguration csvParserConfiguration) {
 		this.csvParserConfiguration = csvParserConfiguration;
 	}
 
 	@Override
 	public Stream<ImportRow> parse(FileSource source) {
-		InputStreamReader csvStreamReader = new InputStreamReader(source.toInputStream(), charset);
+		InputStreamReader csvStreamReader = new InputStreamReader(source.toInputStream(), csvParserConfiguration.getCharset());
 		Iterator<String[]> csvRowIterator = new CSVReaderBuilder(csvStreamReader)
-			.withCSVParser(csvParserConfiguration.build())
+			.withCSVParser(
+				new CSVParserBuilder()
+					.withEscapeChar(csvParserConfiguration.getEscapeChar())
+					.withFieldAsNull(csvParserConfiguration.getNullFieldIndicator())
+					.withIgnoreLeadingWhiteSpace(csvParserConfiguration.isIgnoreLeadingWhiteSpace())
+					.withIgnoreQuotations(csvParserConfiguration.isIgnoreQuotations())
+					.withQuoteChar(csvParserConfiguration.getQuoteChar())
+					.withSeparator(csvParserConfiguration.getSeparator())
+					.withStrictQuotes(csvParserConfiguration.isStrictQuotes())
+					.build()
+			)
+			.withKeepCarriageReturn(csvParserConfiguration.isKeepCr())
 			.build()
 			.iterator();
 
