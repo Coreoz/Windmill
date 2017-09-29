@@ -7,8 +7,8 @@ import java.util.stream.Stream;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import com.coreoz.windmill.files.FileSource;
 import com.coreoz.windmill.importer.FileParser;
-import com.coreoz.windmill.importer.FileSource;
 import com.coreoz.windmill.importer.ImportRow;
 import com.coreoz.windmill.utils.IteratorStreams;
 

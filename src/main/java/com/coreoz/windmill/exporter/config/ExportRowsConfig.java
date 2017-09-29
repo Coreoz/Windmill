@@ -4,8 +4,6 @@ import com.coreoz.windmill.exporter.exporters.csv.CsvExporter;
 import com.coreoz.windmill.exporter.exporters.csv.ExportCsvConfig;
 import com.coreoz.windmill.exporter.exporters.excel.ExcelExporter;
 import com.coreoz.windmill.exporter.exporters.excel.ExportExcelConfig;
-import com.coreoz.windmill.exporter.exporters.excel.ExportExcelFileConfig;
-import com.coreoz.windmill.exporter.exporters.excel.ExportExcelSheetConfig;
 
 public class ExportRowsConfig<T> {
 
@@ -26,9 +24,7 @@ public class ExportRowsConfig<T> {
 	}
 
 	public ExcelExporter<T> asExcel() {
-		return asExcel(ExportExcelConfig.of(ExportExcelSheetConfig.of(
-			ExportExcelFileConfig.newFile()
-		)));
+		return asExcel(ExportExcelConfig.newXlsxFile().build());
 	}
 
 	public ExcelExporter<T> asExcel(ExportExcelConfig config) {

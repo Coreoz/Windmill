@@ -7,14 +7,14 @@ import java.util.function.Function;
 
 public class ExportNoHeaderMapping<T> implements ExportMapping<T> {
 
-	private final List<Function<T, Object>> toValues;
+	private final List<Function<T, ?>> toValues;
 
-	public ExportNoHeaderMapping(List<Function<T, Object>> toValues) {
+	public ExportNoHeaderMapping(List<Function<T, ?>> toValues) {
 		this.toValues = toValues;
 	}
 
 	@SafeVarargs
-	public ExportNoHeaderMapping(Function<T, Object> ...toValue) {
+	public ExportNoHeaderMapping(Function<T, ?> ...toValue) {
 		this.toValues = Arrays.asList(toValue);
 	}
 

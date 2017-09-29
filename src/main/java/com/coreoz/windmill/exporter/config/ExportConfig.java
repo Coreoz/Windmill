@@ -11,12 +11,12 @@ public class ExportConfig<T> {
 		this.rows = rows;
 	}
 
-	public ExportRowsConfig<T> withNoHeaderMapping(List<Function<T, Object>> toValues) {
+	public ExportRowsConfig<T> withNoHeaderMapping(List<Function<T, ?>> toValues) {
 		return new ExportRowsConfig<>(rows, new ExportNoHeaderMapping<>(toValues));
 	}
 
 	@SafeVarargs
-	public final ExportRowsConfig<T> withNoHeaderMapping(Function<T, Object> ...toValue) {
+	public final ExportRowsConfig<T> withNoHeaderMapping(Function<T, ?> ...toValue) {
 		return new ExportRowsConfig<>(rows, new ExportNoHeaderMapping<>(toValue));
 	}
 

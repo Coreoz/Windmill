@@ -11,8 +11,8 @@ import org.junit.Test;
 
 import com.coreoz.windmill.exporter.config.ExportConfig;
 import com.coreoz.windmill.exporter.config.ExportHeaderMapping;
-import com.coreoz.windmill.importer.FileSource;
-import com.coreoz.windmill.importer.ParserGuesserTest;
+import com.coreoz.windmill.files.FileSource;
+import com.coreoz.windmill.files.ParserGuesserTest;
 
 import lombok.Value;
 
@@ -95,7 +95,7 @@ public class WindmillTest {
 			.add("Double number", Import::getDoubleNumber);
 	}
 
-	private List<Function<Import, Object>> exportNoHeaderMapping() {
+	private List<Function<Import, ?>> exportNoHeaderMapping() {
 		return Arrays.asList(
 			Import::getA,
 			Import::getB,

@@ -1,4 +1,4 @@
-package com.coreoz.windmill.importer;
+package com.coreoz.windmill.files;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;

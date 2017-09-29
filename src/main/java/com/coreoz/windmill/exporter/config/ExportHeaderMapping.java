@@ -17,7 +17,7 @@ public class ExportHeaderMapping<T> implements ExportMapping<T> {
 		this(new ArrayList<>());
 	}
 
-	public ExportHeaderMapping<T> add(String name, Function<T, Object> toValue) {
+	public ExportHeaderMapping<T> add(String name, Function<T, ?> toValue) {
 		this.columns.add(ExportColumn.of(name, toValue));
 		return this;
 	}

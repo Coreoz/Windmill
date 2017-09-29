@@ -8,6 +8,6 @@ import lombok.Value;
 public class ExportColumn<T> {
 
 	private final String name;
-	private final Function<T, Object> toValue;
+	private final Function<T, ?> toValue;
 
 }
