@@ -2,9 +2,6 @@ package com.coreoz.windmill;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -42,13 +39,7 @@ public class WindmillTest {
 	}
 
 	@Test
-	public void should_export_as_xlsx_no_header() throws FileNotFoundException {
-
-		exportBase()
-		.withNoHeaderMapping(exportNoHeaderMapping())
-		.asExcel()
-		.writeTo(new FileOutputStream(new File("test_no_header.xlsx")));
-
+	public void should_export_as_xlsx_no_header() {
 		byte[] xlsExport = exportBase()
 			.withNoHeaderMapping(exportNoHeaderMapping())
 			.asExcel()
