@@ -57,7 +57,7 @@ public class ExcelImportCell implements ImportCell {
 	}
 
 	private<T> NumberValue<T> toNumber(Function<Double, T> cast, Function<String, T> valueParser) {
-		return new NumberValueWithDefault<>(tryGetValue(cast), richTextStringTrimmedValue(), valueParser);
+		return new NumberValueWithDefault<>(tryGetValue(cast), asString(), valueParser);
 	}
 
 	private<T> T tryGetValue(Function<Double, T> cast) {

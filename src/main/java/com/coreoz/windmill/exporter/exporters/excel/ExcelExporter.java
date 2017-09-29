@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -19,13 +20,13 @@ public class ExcelExporter<T> {
 	private final Iterable<T> rows;
 	private final ExportMapping<T> mapping;
 	private final ExportExcelConfig sheetConfig;
-	private Row currentRow;
+	private Row currentExcelRow;
 
 	public ExcelExporter(Iterable<T> rows, ExportMapping<T> mapping, ExportExcelConfig sheetConfig) {
 		this.rows = rows;
 		this.mapping = mapping;
 		this.sheetConfig = sheetConfig;
-		this.currentRow = sheetConfig.sheet().createRow(0);
+		this.currentExcelRow = null;
 	}
 
 	/**
@@ -59,26 +60,34 @@ public class ExcelExporter<T> {
 	}
 
 	private void writeHeaderRow() {
-		for (int i = 0; i < mapping.columns().size(); i++) {
-			setCellValue(mapping.columns().get(i).getName(), i);
+		List<String> headerColumn = mapping.headerColumns();
+		if(!headerColumn.isEmpty()) {
+			initializeExcelRow();
+			for (int i = 0; i < headerColumn.size(); i++) {
+				setCellValue(headerColumn.get(i), i);
+			}
 		}
 	}
 
 	private void setAutoSizeColumns() {
-		for (int i = 0; i < mapping.columns().size(); i++) {
+		for (int i = 0; i < mapping.columnsCount(); i++) {
 			sheetConfig.sheet().autoSizeColumn(i);
 		}
 	}
 
 	private void writeRow(T row) {
-		currentRow = sheetConfig.sheet().createRow(currentRow.getRowNum() + 1);
-		for (int i = 0; i < mapping.columns().size(); i++) {
-			setCellValue(mapping.columns().get(i).getToValue().apply(row), i);
+		initializeExcelRow();
+		for (int i = 0; i < mapping.columnsCount(); i++) {
+			setCellValue(mapping.cellValue(i, row), i);
 		}
 	}
 
+	private void initializeExcelRow() {
+		currentExcelRow = sheetConfig.sheet().createRow(currentExcelRow == null ? 0 : currentExcelRow.getRowNum() + 1);
+	}
+
 	private void setCellValue(final Object value, final int columnIndex) {
-		Cell cell = currentRow.createCell(columnIndex);
+		Cell cell = currentExcelRow.createCell(columnIndex);
 		sheetConfig.cellStyler().style(cell);
 
 		if(value == null) {

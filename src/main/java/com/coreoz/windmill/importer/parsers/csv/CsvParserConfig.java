@@ -11,7 +11,7 @@ import lombok.Value;
 
 @Value
 @Builder
-public class CsvParserConfiguration {
+public class CsvParserConfig {
 
 	/** the file charset */
 	@Builder.Default private final Charset charset = StandardCharsets.ISO_8859_1;

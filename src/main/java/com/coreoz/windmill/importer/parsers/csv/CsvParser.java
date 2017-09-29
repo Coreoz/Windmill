@@ -13,13 +13,13 @@ import com.opencsv.CSVReaderBuilder;
 
 public class CsvParser implements FileParser {
 
-	private final CsvParserConfiguration csvParserConfiguration;
+	private final CsvParserConfig csvParserConfiguration;
 
 	public CsvParser() {
-		this(CsvParserConfiguration.builder().build());
+		this(CsvParserConfig.builder().build());
 	}
 
-	public CsvParser(CsvParserConfiguration csvParserConfiguration) {
+	public CsvParser(CsvParserConfig csvParserConfiguration) {
 		this.csvParserConfiguration = csvParserConfiguration;
 	}
 

@@ -1,5 +1,7 @@
 package com.coreoz.windmill.exporter.config;
 
+import com.coreoz.windmill.exporter.exporters.csv.CsvExporter;
+import com.coreoz.windmill.exporter.exporters.csv.ExportCsvConfig;
 import com.coreoz.windmill.exporter.exporters.excel.ExcelExporter;
 import com.coreoz.windmill.exporter.exporters.excel.ExportExcelConfig;
 import com.coreoz.windmill.exporter.exporters.excel.ExportExcelFileConfig;
@@ -13,6 +15,14 @@ public class ExportRowsConfig<T> {
 	public ExportRowsConfig(Iterable<T> rows, ExportMapping<T> mapping) {
 		this.mapping = mapping;
 		this.rows = rows;
+	}
+
+	public CsvExporter<T> asCsv() {
+		return asCsv(ExportCsvConfig.builder().build());
+	}
+
+	public CsvExporter<T> asCsv(ExportCsvConfig config) {
+		return new CsvExporter<>(rows, mapping, config);
 	}
 
 	public ExcelExporter<T> asExcel() {
