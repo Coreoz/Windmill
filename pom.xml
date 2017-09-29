@@ -35,8 +35,8 @@
 	</developers>
 
 	<scm>
-		<developerConnection>scm:git:git@github.com:Coreoz/Windmill.git</developerConnection>
-		<connection>scm:git:git@github.com:Coreoz/Windmill.git</connection>
+		<developerConnection>scm:git:git@gitlab.coreoz.com:coreoz/windmill.git</developerConnection>
+		<connection>scm:git:git@gitlab.coreoz.com:coreoz/windmill.git</connection>
 		<url>https://github.com/Coreoz/Windmill</url>
 		<tag>HEAD</tag>
 	</scm>
