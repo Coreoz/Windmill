@@ -1,6 +1,10 @@
 Windmill
 ========
 
+[![Build Status](https://travis-ci.org/Coreoz/Windmill.svg?branch=master)](https://travis-ci.org/Coreoz/Windmill)
+[![Coverage Status](https://coveralls.io/repos/github/Windmill/Wisp/badge.svg?branch=master)](https://coveralls.io/github/Coreoz/Windmill?branch=master)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.coreoz/windmill/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.coreoz/windmill)
+
 Windmill is a library to import or export Excel and CSV files through a fluent API
 that takes advantage of Java 8 Stream and Lambda features.
 
@@ -11,7 +15,7 @@ Include Windmill in your project:
 <dependency>
   <groupId>com.coreoz</groupId>
   <artifactId>windmill</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0-rc1</version>
 </dependency>
 ```
 
