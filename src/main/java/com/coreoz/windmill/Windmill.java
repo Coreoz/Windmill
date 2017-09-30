@@ -3,12 +3,12 @@ package com.coreoz.windmill;
 import java.io.IOException;
 import java.util.stream.Stream;
 
-import com.coreoz.windmill.exporter.config.ExportConfig;
+import com.coreoz.windmill.exports.config.ExportConfig;
 import com.coreoz.windmill.files.FileSource;
 import com.coreoz.windmill.files.FileTypeGuesser;
-import com.coreoz.windmill.importer.FileParser;
-import com.coreoz.windmill.importer.ImportRow;
-import com.coreoz.windmill.importer.Parsers;
+import com.coreoz.windmill.imports.FileParser;
+import com.coreoz.windmill.imports.ImportRow;
+import com.coreoz.windmill.imports.Parsers;
 
 /**
  * Entry point to parse/export CSV and Excel files

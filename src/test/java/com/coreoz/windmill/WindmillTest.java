@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import com.coreoz.windmill.exporter.config.ExportConfig;
-import com.coreoz.windmill.exporter.config.ExportHeaderMapping;
+import com.coreoz.windmill.exports.config.ExportConfig;
+import com.coreoz.windmill.exports.config.ExportHeaderMapping;
 import com.coreoz.windmill.files.FileSource;
 import com.coreoz.windmill.files.ParserGuesserTest;
 
@@ -77,8 +77,8 @@ public class WindmillTest {
 
 	private List<Import> data() {
 		return Arrays.asList(
-			Import.of("String value 1", "2", "String 3", 4, 5.45),
-			Import.of("String val", "2bis", "3 String", 54564, 0.25)
+			Import.of("String value 1", "2", "String 3", null, 5.45),
+			Import.of("String val", null, "3 String", 54564, 0.25)
 		);
 	}
 

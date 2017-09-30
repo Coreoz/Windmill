@@ -18,4 +18,5 @@ public class ParserGuesserTest {
 			.assertThat(FileTypeGuesser.guess(FileSource.of(ParserGuesserTest.class.getResourceAsStream("/import.xls"))))
 			.isEqualTo(FileType.CFBF);
 	}
+
 }
