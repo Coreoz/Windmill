@@ -13,6 +13,8 @@ import com.coreoz.windmill.exports.config.ExportConfig;
 import com.coreoz.windmill.exports.config.ExportHeaderMapping;
 import com.coreoz.windmill.files.FileSource;
 import com.coreoz.windmill.files.ParserGuesserTest;
+import com.coreoz.windmill.imports.Cell;
+import com.coreoz.windmill.imports.Row;
 
 import lombok.Value;
 
@@ -73,6 +75,16 @@ public class WindmillTest {
 		tryParseFile("/import.csv");
 	}
 
+	@Test
+	public void import_should_not_return_null_cell_xlsx() {
+		checkInexistantCell("/import.xlsx");
+	}
+
+	@Test
+	public void import_should_not_return_null_cell_csv() {
+		checkInexistantCell("/import.csv");
+	}
+
 	// utils
 
 	private List<Import> data() {
@@ -105,8 +117,12 @@ public class WindmillTest {
 		);
 	}
 
-	private void tryParseFile(String name) {
-		tryParseHeaderFile(FileSource.of(ParserGuesserTest.class.getResourceAsStream(name)));
+	private FileSource loadFile(String fileName) {
+		return FileSource.of(ParserGuesserTest.class.getResourceAsStream(fileName));
+	}
+
+	private void tryParseFile(String fileName) {
+		tryParseHeaderFile(loadFile(fileName));
 	}
 
 	private void tryParseHeaderFile(FileSource fileSource) {
@@ -139,6 +155,27 @@ public class WindmillTest {
 			.collect(Collectors.toList());
 
 		assertThat(result).containsExactlyElementsOf(data());
+	}
+
+	private void checkInexistantCell(String fileName) {
+		Row firstRow = Windmill
+			.parse(loadFile(fileName))
+			.skip(1)
+			.findFirst()
+			.get();
+
+		Cell inexistantCellByName = firstRow.cell("INEXISTANT COLUMN");
+		Cell inexistantCellByIndex = firstRow.cell(97844);
+
+		assertThat(firstRow.columnExists("INEXISTANT COLUMN")).isFalse();
+
+		assertThat(inexistantCellByName).isNotNull();
+		assertThat(inexistantCellByName.asString()).isNull();
+		assertThat(inexistantCellByName.asLong().isNull()).isTrue();
+
+		assertThat(inexistantCellByIndex).isNotNull();
+		assertThat(inexistantCellByIndex.asString()).isNull();
+		assertThat(inexistantCellByIndex.asLong().isNull()).isTrue();
 	}
 
 	@Value(staticConstructor = "of")

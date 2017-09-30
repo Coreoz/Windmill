@@ -3,18 +3,16 @@ package com.coreoz.windmill.imports.parsers.excel;
 import java.util.Iterator;
 import java.util.stream.Collectors;
 
-import org.apache.poi.ss.usermodel.Row;
-
 import com.coreoz.windmill.imports.FileSchema;
-import com.coreoz.windmill.imports.ImportRow;
+import com.coreoz.windmill.imports.Row;
 import com.coreoz.windmill.utils.IteratorStreams;
 
-class ExcelRowIterator implements Iterator<ImportRow> {
+class ExcelRowIterator implements Iterator<Row> {
 
-	private final Iterator<Row> rowIterator;
+	private final Iterator<org.apache.poi.ss.usermodel.Row> rowIterator;
 	private FileSchema fileSchema;
 
-	public ExcelRowIterator(Iterator<Row> rowIterator) {
+	public ExcelRowIterator(Iterator<org.apache.poi.ss.usermodel.Row> rowIterator) {
 		this.rowIterator = rowIterator;
 		this.fileSchema = null;
 	}
@@ -25,18 +23,18 @@ class ExcelRowIterator implements Iterator<ImportRow> {
 	}
 
 	@Override
-	public ImportRow next() {
-		Row nextExcelRow = rowIterator.next();
+	public Row next() {
+		org.apache.poi.ss.usermodel.Row nextExcelRow = rowIterator.next();
 
 		if (fileSchema == null) {
 			fileSchema = new FileSchema(
 				IteratorStreams
-					.stream(ExcelImportRow.cellIterator(nextExcelRow))
+					.stream(ExcelRow.cellIterator(nextExcelRow))
 					.collect(Collectors.toList())
 			);
 		}
 
-		return new ExcelImportRow(nextExcelRow, fileSchema);
+		return new ExcelRow(nextExcelRow, fileSchema);
 	}
 
 }

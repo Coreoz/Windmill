@@ -2,24 +2,24 @@ package com.coreoz.windmill.imports.parsers.csv;
 
 import java.util.Iterator;
 
+import com.coreoz.windmill.imports.Cell;
 import com.coreoz.windmill.imports.FileSchema;
-import com.coreoz.windmill.imports.ImportCell;
-import com.coreoz.windmill.imports.ImportRow;
+import com.coreoz.windmill.imports.Row;
 
-public class CsvImportRow implements ImportRow {
+public class CsvRow implements Row {
 
 	private final int currentRowIndex;
 	private final FileSchema fileSchema;
 	private final String[] row;
 
-	public CsvImportRow(int currentRowIndex, FileSchema fileSchema, String[] row) {
+	public CsvRow(int currentRowIndex, FileSchema fileSchema, String[] row) {
 		this.currentRowIndex = currentRowIndex;
 		this.fileSchema = fileSchema;
 		this.row = row;
 	}
 
 	@Override
-	public Iterator<ImportCell> iterator() {
+	public Iterator<Cell> iterator() {
 		return new CsvCellIterator(row);
 	}
 
@@ -29,13 +29,18 @@ public class CsvImportRow implements ImportRow {
 	}
 
 	@Override
-	public ImportCell cell(String columnName) {
+	public boolean columnExists(String columnName) {
+		return fileSchema.columnExists(columnName);
+	}
+
+	@Override
+	public Cell cell(String columnName) {
 		return cell(fileSchema.columnIndex(columnName));
 	}
 
 	@Override
-	public ImportCell cell(Integer columnIndex) {
-		return new CsvImportCell(columnIndex, row[columnIndex]);
+	public Cell cell(int columnIndex) {
+		return new CsvCell(columnIndex, row.length > columnIndex ? row[columnIndex] : null);
 	}
 
 }

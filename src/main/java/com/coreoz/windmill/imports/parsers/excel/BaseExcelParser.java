@@ -9,7 +9,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 import com.coreoz.windmill.files.FileSource;
 import com.coreoz.windmill.imports.FileParser;
-import com.coreoz.windmill.imports.ImportRow;
+import com.coreoz.windmill.imports.Row;
 import com.coreoz.windmill.utils.IteratorStreams;
 
 import lombok.SneakyThrows;
@@ -51,7 +51,7 @@ public abstract class BaseExcelParser implements FileParser {
 	 */
 	@SneakyThrows
 	@Override
-	public Stream<ImportRow> parse(FileSource source) {
+	public Stream<Row> parse(FileSource source) {
 		Workbook workbook = openWorkbook(source.toInputStream());
 		Sheet sheet = selectSheet(workbook);
 

@@ -4,17 +4,17 @@ import java.util.function.Function;
 
 import org.apache.poi.ss.usermodel.CellType;
 
-import com.coreoz.windmill.imports.ImportCell;
+import com.coreoz.windmill.imports.Cell;
 import com.coreoz.windmill.imports.NumberValue;
 import com.coreoz.windmill.imports.NumberValueWithDefault;
 import com.coreoz.windmill.utils.Strings;
 
-public class ExcelImportCell implements ImportCell {
+public class ExcelCell implements Cell {
 
 	private final org.apache.poi.ss.usermodel.Cell excelCell;
 	private final int columnIndex;
 
-	public ExcelImportCell(int columnIndex, org.apache.poi.ss.usermodel.Cell excelCell) {
+	public ExcelCell(int columnIndex, org.apache.poi.ss.usermodel.Cell excelCell) {
 		this.excelCell = excelCell;
 		this.columnIndex = columnIndex;
 	}

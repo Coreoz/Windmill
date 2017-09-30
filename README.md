@@ -23,7 +23,7 @@ Import
 ------
 Here is an import example:
 ```java
-try (Stream<ImportRow> rowStream = Windmill.parse(FileSource.of(new FileInputStream("myFile.xlsx")))) {
+try (Stream<Row> rowStream = Windmill.parse(FileSource.of(new FileInputStream("myFile.xlsx")))) {
   rowStream
     // skip the header row that contains the column names
     .skip(1)
@@ -41,14 +41,14 @@ Note that the `try` statement is required to close the `Stream` if the `InputStr
 Options can be passed to the parser.
 For example with Excel workbooks, it is possible to select the spreadsheet to use:
 ```java
-Stream<ImportRow> rowStream = Parsers
+Stream<Row> rowStream = Parsers
   .xlsx("User sheet")
   .parse(FileSource.of(new FileInputStream("myFile.xlsx")));
 ```
 
 With CSV files, it is possible to specify multiple parameters like the charset or the escape character:
 ```java
-Stream<ImportRow> rowStream = Parsers
+Stream<Row> rowStream = Parsers
   .csv(CsvParserConfig.builder().charset(StandardCharsets.UTF_8).separator(';').build())
   .parse(FileSource.of(new FileInputStream("myFile.csv")));
 ```

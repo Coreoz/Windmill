@@ -7,7 +7,7 @@ import com.coreoz.windmill.exports.config.ExportConfig;
 import com.coreoz.windmill.files.FileSource;
 import com.coreoz.windmill.files.FileTypeGuesser;
 import com.coreoz.windmill.imports.FileParser;
-import com.coreoz.windmill.imports.ImportRow;
+import com.coreoz.windmill.imports.Row;
 import com.coreoz.windmill.imports.Parsers;
 
 /**
@@ -20,7 +20,7 @@ public final class Windmill {
 	 * to the file type determined by the {@link FileTypeGuesser}
 	 * @throws IOException
 	 */
-	public static Stream<ImportRow> parse(FileSource fileSource) {
+	public static Stream<Row> parse(FileSource fileSource) {
 		return parse(fileSource, Parsers.forType(FileTypeGuesser.guess(fileSource)));
 	}
 
@@ -28,7 +28,7 @@ public final class Windmill {
 	 * Parse a file with a dedicated {@link FileParser}. See {@link Parsers} for a list of all parsers
 	 * @throws IOException
 	 */
-	public static Stream<ImportRow> parse(FileSource fileSource, FileParser fileParser) {
+	public static Stream<Row> parse(FileSource fileSource, FileParser fileParser) {
 		return fileParser.parse(fileSource);
 	}
 

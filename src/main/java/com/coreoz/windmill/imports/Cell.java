@@ -1,6 +1,6 @@
 package com.coreoz.windmill.imports;
 
-public interface ImportCell {
+public interface Cell {
 
 	/**
 	 * Returns the current cell column index, starts at 0

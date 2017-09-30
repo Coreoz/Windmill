@@ -2,16 +2,16 @@ package com.coreoz.windmill.imports.parsers.csv;
 
 import java.util.function.Function;
 
-import com.coreoz.windmill.imports.ImportCell;
+import com.coreoz.windmill.imports.Cell;
 import com.coreoz.windmill.imports.NumberValue;
 import com.coreoz.windmill.utils.Strings;
 
-public class CsvImportCell implements ImportCell {
+public class CsvCell implements Cell {
 
 	private final int columnIndex;
 	private final String value;
 
-	public CsvImportCell(int columnIndex, String value) {
+	public CsvCell(int columnIndex, String value) {
 		this.columnIndex = columnIndex;
 		this.value = value;
 	}
@@ -47,7 +47,7 @@ public class CsvImportCell implements ImportCell {
 	}
 
 	private<T> NumberValue<T> toNumber(Function<String, T> valueParser) {
-		return new NumberValue<>(value, valueParser);
+		return new NumberValue<>(asString(), valueParser);
 	}
 
 }

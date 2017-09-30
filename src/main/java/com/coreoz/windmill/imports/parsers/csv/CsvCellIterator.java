@@ -2,9 +2,9 @@ package com.coreoz.windmill.imports.parsers.csv;
 
 import java.util.Iterator;
 
-import com.coreoz.windmill.imports.ImportCell;
+import com.coreoz.windmill.imports.Cell;
 
-class CsvCellIterator implements Iterator<ImportCell> {
+class CsvCellIterator implements Iterator<Cell> {
 
 	private final String[] csvRow;
 	private int rowIndex;
@@ -20,8 +20,8 @@ class CsvCellIterator implements Iterator<ImportCell> {
 	}
 
 	@Override
-	public ImportCell next() {
-		ImportCell cell = new CsvImportCell(rowIndex, csvRow[rowIndex]);
+	public Cell next() {
+		Cell cell = new CsvCell(rowIndex, csvRow[rowIndex]);
 		rowIndex++;
 		return cell;
 	}

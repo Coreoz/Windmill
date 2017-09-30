@@ -4,10 +4,10 @@ import java.util.Iterator;
 import java.util.stream.Collectors;
 
 import com.coreoz.windmill.imports.FileSchema;
-import com.coreoz.windmill.imports.ImportRow;
+import com.coreoz.windmill.imports.Row;
 import com.coreoz.windmill.utils.IteratorStreams;
 
-public class CsvRowIterator implements Iterator<ImportRow> {
+public class CsvRowIterator implements Iterator<Row> {
 
 	private final Iterator<String[]> csvRowIterator;
 	private FileSchema fileSchema;
@@ -25,7 +25,7 @@ public class CsvRowIterator implements Iterator<ImportRow> {
 	}
 
 	@Override
-	public ImportRow next() {
+	public Row next() {
 		String[] nextCsvRow = csvRowIterator.next();
 
 		if (fileSchema == null) {
@@ -36,10 +36,10 @@ public class CsvRowIterator implements Iterator<ImportRow> {
 			);
 		}
 
-		CsvImportRow importRow = new CsvImportRow(currentRowIndex, fileSchema, nextCsvRow);
+		CsvRow csvRow = new CsvRow(currentRowIndex, fileSchema, nextCsvRow);
 		currentRowIndex++;
 
-		return importRow;
+		return csvRow;
 	}
 
 }

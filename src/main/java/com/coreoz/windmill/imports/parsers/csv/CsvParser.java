@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 import com.coreoz.windmill.files.FileSource;
 import com.coreoz.windmill.imports.FileParser;
-import com.coreoz.windmill.imports.ImportRow;
+import com.coreoz.windmill.imports.Row;
 import com.coreoz.windmill.utils.IteratorStreams;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReaderBuilder;
@@ -24,7 +24,7 @@ public class CsvParser implements FileParser {
 	}
 
 	@Override
-	public Stream<ImportRow> parse(FileSource source) {
+	public Stream<Row> parse(FileSource source) {
 		InputStreamReader csvStreamReader = new InputStreamReader(source.toInputStream(), csvParserConfiguration.getCharset());
 		Iterator<String[]> csvRowIterator = new CSVReaderBuilder(csvStreamReader)
 			.withCSVParser(

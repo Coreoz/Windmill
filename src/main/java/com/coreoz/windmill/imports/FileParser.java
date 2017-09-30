@@ -15,6 +15,6 @@ public interface FileParser {
 	 * @param source The file input source
 	 * @return A stream containing the file rows <strong>that should be closed</strong> when it is done reading
 	 */
-	Stream<ImportRow> parse(FileSource source);
+	Stream<Row> parse(FileSource source);
 
 }
