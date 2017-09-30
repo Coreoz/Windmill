@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
 
 import com.coreoz.windmill.exports.config.ExportMapping;
 
@@ -30,6 +31,16 @@ public class ExcelExporter<T> {
 	}
 
 	/**
+	 * Write the export file in the {@link Workbook}
+	 * 
+	 * @return The {@link Workbook} in which the export has been written
+	 */
+	public Workbook write() {
+		writeRows();
+		return sheetConfig.sheet().getWorkbook();
+	}
+
+	/**
 	 * Write the export file in an existing {@link OutputStream}.
 	 * 
 	 * This {@link OutputStream} will not be closed automatically:
@@ -39,8 +50,7 @@ public class ExcelExporter<T> {
 	 */
 	@SneakyThrows
 	public OutputStream writeTo(OutputStream outputStream) {
-		writeRows();
-		sheetConfig.sheet().getWorkbook().write(outputStream);
+		write().write(outputStream);
 		return outputStream;
 	}
 
