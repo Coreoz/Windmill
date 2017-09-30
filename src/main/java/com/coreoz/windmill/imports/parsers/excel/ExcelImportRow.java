@@ -42,7 +42,7 @@ public class ExcelImportRow implements ImportRow {
 
 	// internal
 
-	static ImportCell toCell(Integer columnIndex, Cell excelCell) {
+	private static ImportCell toCell(Integer columnIndex, Cell excelCell) {
 		return new ExcelImportCell(columnIndex, excelCell);
 	}
 
