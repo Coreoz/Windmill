@@ -2,7 +2,7 @@ Windmill
 ========
 
 [![Build Status](https://travis-ci.org/Coreoz/Windmill.svg?branch=master)](https://travis-ci.org/Coreoz/Windmill)
-[![Coverage Status](https://coveralls.io/repos/github/Windmill/Wisp/badge.svg?branch=master)](https://coveralls.io/github/Coreoz/Windmill?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/Coreoz/Windmill/badge.svg?branch=master)](https://coveralls.io/github/Coreoz/Windmill?branch=master)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.coreoz/windmill/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.coreoz/windmill)
 
 Windmill is a library to import or export Excel and CSV files through a fluent API
