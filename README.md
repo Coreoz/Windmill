@@ -15,7 +15,7 @@ Include Windmill in your project:
 <dependency>
   <groupId>com.coreoz</groupId>
   <artifactId>windmill</artifactId>
-  <version>1.0.0-rc1</version>
+  <version>1.0.0-rc2</version>
 </dependency>
 ```
 
