@@ -8,7 +8,7 @@
 	<packaging>jar</packaging>
 
 	<name>Windmill</name>
-	<description>A Java 8 friendly library to import/export Excel and CSV files.</description>
+	<description>A library to import or export Excel and CSV files through a fluent API</description>
 	<url>https://github.com/Coreoz/Windmill</url>
 
 	<organization>
@@ -34,20 +34,20 @@
 	</developers>
 
 	<scm>
-		<developerConnection>scm:git:git@gitlab.coreoz.com:coreoz/windmill.git</developerConnection>
-		<connection>scm:git:git@gitlab.coreoz.com:coreoz/windmill.git</connection>
+		<developerConnection>scm:git:git@github.com:Coreoz/Windmill.git</developerConnection>
+		<connection>scm:git:git@github.com:Coreoz/Windmill.git</connection>
 		<url>https://github.com/Coreoz/Windmill</url>
 		<tag>HEAD</tag>
 	</scm>
 
 	<distributionManagement>
 		<snapshotRepository>
-			<id>interne</id>
-			<url>http://artifactory.coreoz.com/libs-snapshot-local</url>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
 		<repository>
-			<id>interne</id>
-			<url>http://artifactory.coreoz.com/libs-release-local</url>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
 		</repository>
 	</distributionManagement>
 
@@ -56,8 +56,6 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<additionalparam>-Xdoclint:none</additionalparam>
-
-		<poi.version>3.16-beta1</poi.version>
 	</properties>
 
 	<profiles>
@@ -134,7 +132,7 @@
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
-			<version>${poi.version}</version>
+			<version>3.16-beta1</version>
 		</dependency>
 
 		<dependency>
@@ -159,13 +157,7 @@
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
-			<version>3.5.2</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>1.1.7</version>
+			<version>3.8.0</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
