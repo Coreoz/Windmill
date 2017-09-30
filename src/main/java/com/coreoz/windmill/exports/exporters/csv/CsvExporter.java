@@ -26,16 +26,16 @@ public class CsvExporter<T> {
 
 	/**
 	 * Write the export file in an existing {@link OutputStream}.
-	 * 
+	 *
 	 * This {@link OutputStream} will not be closed automatically:
 	 * it should be closed manually after this method is called.
-	 * 
+	 *
 	 * @throws IOException if anything can't be written.
 	 */
 	@SneakyThrows
 	public OutputStream writeTo(OutputStream outputStream) {
 		csvWriter = new CSVWriter(
-			new OutputStreamWriter(outputStream),
+			new OutputStreamWriter(outputStream, exportConfig.getCharset()),
 			exportConfig.getSeparator(),
 			exportConfig.getQuoteChar(),
 			exportConfig.getEscapeChar(),
