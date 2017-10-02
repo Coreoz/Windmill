@@ -8,6 +8,9 @@ Windmill
 Windmill is a library to import or export Excel and CSV files through a fluent API
 that takes advantage of Java 8 Stream and Lambda features.
 
+It is based on the projects [Apache POI](https://poi.apache.org/)
+and [OpenCSV](http://opencsv.sourceforge.net/) to manipulate Excel and CSV files.
+
 Getting started
 ---------------
 Include Windmill in your project:
