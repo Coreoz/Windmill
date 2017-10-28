@@ -6,7 +6,7 @@ import com.coreoz.windmill.imports.Cell;
 import com.coreoz.windmill.imports.FileSchema;
 import com.coreoz.windmill.imports.Row;
 
-public class CsvRow implements Row {
+class CsvRow implements Row {
 
 	private final int currentRowIndex;
 	private final FileSchema fileSchema;

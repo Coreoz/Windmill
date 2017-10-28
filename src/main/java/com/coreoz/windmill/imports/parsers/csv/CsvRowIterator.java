@@ -7,7 +7,7 @@ import com.coreoz.windmill.imports.FileSchema;
 import com.coreoz.windmill.imports.Row;
 import com.coreoz.windmill.utils.IteratorStreams;
 
-public class CsvRowIterator implements Iterator<Row> {
+class CsvRowIterator implements Iterator<Row> {
 
 	private final Iterator<String[]> csvRowIterator;
 	private FileSchema fileSchema;

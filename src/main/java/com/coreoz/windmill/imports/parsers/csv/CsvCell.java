@@ -4,9 +4,8 @@ import java.util.function.Function;
 
 import com.coreoz.windmill.imports.Cell;
 import com.coreoz.windmill.imports.NumberValue;
-import com.coreoz.windmill.utils.Strings;
 
-public class CsvCell implements Cell {
+class CsvCell implements Cell {
 
 	private final int columnIndex;
 	private final String value;
@@ -23,7 +22,7 @@ public class CsvCell implements Cell {
 
 	@Override
 	public String asString() {
-		return Strings.emptyToNull(value);
+		return value;
 	}
 
 	@Override

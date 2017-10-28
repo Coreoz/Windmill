@@ -30,6 +30,6 @@ public class CsvParserConfig {
 	/** if true, quotations are ignored */
 	@Builder.Default private final boolean ignoreQuotations = ICSVParser.DEFAULT_IGNORE_QUOTATIONS;
 	/** set to what should be considered a null field */
-	@Builder.Default private final CSVReaderNullFieldIndicator nullFieldIndicator = CSVReaderNullFieldIndicator.NEITHER;
+	@Builder.Default private final CSVReaderNullFieldIndicator nullFieldIndicator = CSVReaderNullFieldIndicator.BOTH;
 
 }
