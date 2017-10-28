@@ -42,10 +42,12 @@ try (Stream<Row> rowStream = Windmill.parse(FileSource.of(new FileInputStream("m
 Note that the `try` statement is required to close the `Stream` if the `InputStream` used should be closed.
 
 Options can be passed to the parser.
-For example with Excel workbooks, it is possible to select the spreadsheet to use:
+For example with Excel workbooks, it is possible to select the spreadsheet to use,
+or to specify that cell values should be trimmed:
 ```java
 Stream<Row> rowStream = Parsers
   .xlsx("User sheet")
+  .trimValues()
   .parse(FileSource.of(new FileInputStream("myFile.xlsx")));
 ```
 

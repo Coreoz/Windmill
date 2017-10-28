@@ -10,10 +10,12 @@ import com.coreoz.windmill.utils.IteratorStreams;
 class ExcelRowIterator implements Iterator<Row> {
 
 	private final Iterator<org.apache.poi.ss.usermodel.Row> rowIterator;
+	private final boolean trimValues;
 	private FileSchema fileSchema;
 
-	public ExcelRowIterator(Iterator<org.apache.poi.ss.usermodel.Row> rowIterator) {
+	public ExcelRowIterator(Iterator<org.apache.poi.ss.usermodel.Row> rowIterator, boolean trimValues) {
 		this.rowIterator = rowIterator;
+		this.trimValues = trimValues;
 		this.fileSchema = null;
 	}
 
@@ -29,12 +31,12 @@ class ExcelRowIterator implements Iterator<Row> {
 		if (fileSchema == null) {
 			fileSchema = new FileSchema(
 				IteratorStreams
-					.stream(ExcelRow.cellIterator(nextExcelRow))
+					.stream(ExcelRow.cellIterator(nextExcelRow, trimValues))
 					.collect(Collectors.toList())
 			);
 		}
 
-		return new ExcelRow(nextExcelRow, fileSchema);
+		return new ExcelRow(nextExcelRow, fileSchema, trimValues);
 	}
 
 }

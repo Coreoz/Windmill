@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 
@@ -14,6 +15,7 @@ import com.coreoz.windmill.exports.config.ExportHeaderMapping;
 import com.coreoz.windmill.files.FileSource;
 import com.coreoz.windmill.files.ParserGuesserTest;
 import com.coreoz.windmill.imports.Cell;
+import com.coreoz.windmill.imports.Parsers;
 import com.coreoz.windmill.imports.Row;
 
 import lombok.Value;
@@ -85,12 +87,27 @@ public class WindmillTest {
 		checkInexistantCell("/import.csv");
 	}
 
+	@Test
+	public void should_parse_xlsx_with_trimmed_values() {
+		List<Import> result = Parsers
+			.xlsx()
+			.trimValues()
+			.parse(loadFile("/import.xlsx"))
+			.skip(2)
+			.map(parseNamedRow())
+			.collect(Collectors.toList());
+
+		assertThat(result).containsExactlyElementsOf(Arrays.asList(
+			Import.of("String val", null, "3 String", 54564, 0.25)
+		));
+	}
+
 	// utils
 
 	private List<Import> data() {
 		return Arrays.asList(
 			Import.of("String value 1", "2", "String 3", null, 5.45),
-			Import.of("String val", null, "3 String", 54564, 0.25)
+			Import.of("String val", null, "3 String ", 54564, 0.25)
 		);
 	}
 
@@ -130,22 +147,25 @@ public class WindmillTest {
 			.parse(fileSource)
 			// do not parse the header line
 			.skip(1)
-			.map(row -> Import.of(
-				row.cell("a").asString(),
-				row.cell("b").asString(),
-				row.cell("c").asString(),
-				row.cell("Integer number").asInteger().value(),
-				row.cell("Double number").asDouble().value()
-			))
+			.map(parseNamedRow())
 			.collect(Collectors.toList());
 
 		assertThat(result).containsExactlyElementsOf(data());
 	}
 
+	private Function<? super Row, ? extends Import> parseNamedRow() {
+		return row -> Import.of(
+			row.cell("a").asString(),
+			row.cell("b").asString(),
+			row.cell("c").asString(),
+			row.cell("Integer number").asInteger().value(),
+			row.cell("Double number").asDouble().value()
+		);
+	}
+
 	private void tryParseNoHeaderFile(FileSource fileSource) {
-		List<Import> result = Windmill
-			.parse(fileSource)
-			.map(row -> Import.of(
+		try (Stream<Row> rowStream = Windmill.parse(fileSource)) {
+			List<Import> result = rowStream.map(row -> Import.of(
 				row.cell(0).asString(),
 				row.cell(1).asString(),
 				row.cell(2).asString(),
@@ -154,7 +174,8 @@ public class WindmillTest {
 			))
 			.collect(Collectors.toList());
 
-		assertThat(result).containsExactlyElementsOf(data());
+			assertThat(result).containsExactlyElementsOf(data());
+		}
 	}
 
 	private void checkInexistantCell(String fileName) {

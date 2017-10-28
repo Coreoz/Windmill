@@ -7,16 +7,17 @@ import org.apache.poi.ss.usermodel.CellType;
 import com.coreoz.windmill.imports.Cell;
 import com.coreoz.windmill.imports.NumberValue;
 import com.coreoz.windmill.imports.NumberValueWithDefault;
-import com.coreoz.windmill.utils.Strings;
 
-public class ExcelCell implements Cell {
+class ExcelCell implements Cell {
 
 	private final org.apache.poi.ss.usermodel.Cell excelCell;
 	private final int columnIndex;
+	private final boolean trimValue;
 
-	public ExcelCell(int columnIndex, org.apache.poi.ss.usermodel.Cell excelCell) {
+	public ExcelCell(int columnIndex, org.apache.poi.ss.usermodel.Cell excelCell, boolean trimValue) {
 		this.excelCell = excelCell;
 		this.columnIndex = columnIndex;
+		this.trimValue = trimValue;
 	}
 
 	@Override
@@ -32,9 +33,9 @@ public class ExcelCell implements Cell {
 		}
 		if (excelCell.getCellTypeEnum() == CellType.NUMERIC) {
 			excelCell.setCellType(CellType.STRING);
-			return Strings.emptyToNull(excelCell.getStringCellValue());
+			return emptyToNull(excelCell.getStringCellValue());
 		}
-		return richTextStringTrimmedValue();
+		return emptyToNullTrimmed(excelCell.getRichStringCellValue().getString(), trimValue);
 	}
 
 	@Override
@@ -62,6 +63,8 @@ public class ExcelCell implements Cell {
 		return toNumber(Function.identity(), Double::parseDouble);
 	}
 
+	// internal
+
 	private<T> NumberValue<T> toNumber(Function<Double, T> cast, Function<String, T> valueParser) {
 		return new NumberValueWithDefault<>(tryGetValue(cast), asString(), valueParser);
 	}
@@ -73,8 +76,14 @@ public class ExcelCell implements Cell {
 		return null;
 	}
 
-	private String richTextStringTrimmedValue() {
-		return Strings.emptyToNull(excelCell.getRichStringCellValue().getString());
+	private static String emptyToNull(String value) {
+		return "".equals(value) ? null : value;
+	}
+
+	private static String emptyToNullTrimmed(String value, boolean shouldTrim) {
+		return "".equals(value) ?
+			null
+			: (shouldTrim ? value.trim() : value);
 	}
 
 }
