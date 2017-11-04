@@ -18,7 +18,7 @@ Include Windmill in your project:
 <dependency>
   <groupId>com.coreoz</groupId>
   <artifactId>windmill</artifactId>
-  <version>1.0.0-rc2</version>
+  <version>1.0.0</version>
 </dependency>
 ```
 
@@ -101,3 +101,4 @@ Windmill
 
 xlsxFile.write(new FileOutputStream("Export.xlsx"));
 ```
+
