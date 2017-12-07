@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import com.coreoz.windmill.exports.config.ExportMapping;
@@ -32,7 +33,7 @@ public class ExcelExporter<T> {
 
 	/**
 	 * Write the export file in the {@link Workbook}
-	 * 
+	 *
 	 * @return The {@link Workbook} in which the export has been written
 	 */
 	public Workbook write() {
@@ -42,10 +43,10 @@ public class ExcelExporter<T> {
 
 	/**
 	 * Write the export file in an existing {@link OutputStream}.
-	 * 
+	 *
 	 * This {@link OutputStream} will not be closed automatically:
 	 * it should be closed manually after this method is called.
-	 * 
+	 *
 	 * @throws IOException if anything can't be written.
 	 */
 	@SneakyThrows
@@ -99,11 +100,15 @@ public class ExcelExporter<T> {
 	}
 
 	private void initializeExcelRow() {
-		currentExcelRow = sheetConfig.sheet().createRow(currentExcelRow == null ? 0 : currentExcelRow.getRowNum() + 1);
+		int rowIndex = currentExcelRow == null ? 0 : currentExcelRow.getRowNum() + 1;
+		currentExcelRow = sheetConfig.sheet().getRow(rowIndex);
+		if(currentExcelRow == null) {
+			currentExcelRow =  sheetConfig.sheet().createRow(rowIndex);
+		}
 	}
 
 	private void setCellValue(final Object value, final int columnIndex) {
-		Cell cell = currentExcelRow.createCell(columnIndex);
+		Cell cell = currentExcelRow.getCell(columnIndex, MissingCellPolicy.CREATE_NULL_AS_BLANK);
 		sheetConfig.cellStyler().style(cell);
 
 		if(value == null) {
