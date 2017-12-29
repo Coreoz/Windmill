@@ -80,7 +80,7 @@ Windmill
   .export(Arrays.asList(bean1, bean2, bean3))
   .withNoHeaderMapping(Bean::getName, bean -> bean.getUser().getLogin())
   .asCsv(ExportCsvConfig.builder().separator(';').escapeChar('"').build());
-  .writeTo(new FileOutputStream("Export.csv"));
+  .toByteArray();
 ```
 
 It is also possible to export multiple tabs in one Excel workbook:
