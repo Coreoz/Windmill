@@ -100,7 +100,7 @@ public class ExcelExporter<T> {
 	}
 
 	private void initializeExcelRow() {
-		int rowIndex = currentExcelRow == null ? 0 : currentExcelRow.getRowNum() + 1;
+		int rowIndex = currentExcelRow == null ? sheetConfig.rowOrigin() : currentExcelRow.getRowNum() + 1;
 		currentExcelRow = sheetConfig.sheet().getRow(rowIndex);
 		if(currentExcelRow == null) {
 			currentExcelRow =  sheetConfig.sheet().createRow(rowIndex);
@@ -108,7 +108,10 @@ public class ExcelExporter<T> {
 	}
 
 	private void setCellValue(final Object value, final int columnIndex) {
-		Cell cell = currentExcelRow.getCell(columnIndex, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+		Cell cell = currentExcelRow.getCell(
+			sheetConfig.columnOrigin() + columnIndex,
+			MissingCellPolicy.CREATE_NULL_AS_BLANK
+		);
 		sheetConfig.cellStyler().style(cell);
 
 		if(value == null) {

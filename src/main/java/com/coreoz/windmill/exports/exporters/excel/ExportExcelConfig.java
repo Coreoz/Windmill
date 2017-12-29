@@ -25,11 +25,15 @@ public final class ExportExcelConfig {
 
 	private final Sheet sheet;
 	private ExcelCellStyler cellStyler;
+	private int columnOrigin;
+	private int rowOrigin;
 
 	ExportExcelConfig(Sheet sheet) {
 		this.sheet = sheet;
 		this.cellStyler = ExcelCellStyler.bordersStyle();
 		this.cellStyler.initialize(sheet.getWorkbook());
+		this.columnOrigin = 0;
+		this.rowOrigin = 0;
 	}
 
 	Sheet sheet() {
@@ -40,8 +44,33 @@ public final class ExportExcelConfig {
 		return this.cellStyler;
 	}
 
+	int columnOrigin() {
+		return this.columnOrigin;
+	}
+
+	int rowOrigin() {
+		return this.rowOrigin;
+	}
+
 	public ExportExcelConfig withCellStyler(ExcelCellStyler cellStyler) {
 		this.cellStyler = cellStyler;
+		return this;
+	}
+
+	/**
+	 * Indicates to export data from the origin point.
+	 * By default the origin is the point (0, 0).
+	 * That enables to leave the first columns/rows of the Excel sheet untouched by the export.
+	 *
+	 * @throws IllegalArgumentException If the origin point contains negative coordinates
+	 */
+	public ExportExcelConfig withOrigin(int columnIndex, int rowIndex) {
+		if(columnIndex < 0 || rowIndex < 0) {
+			throw new IllegalArgumentException("The origin point coordinates must be positive");
+		}
+
+		this.columnOrigin = columnIndex;
+		this.rowOrigin = rowIndex;
 		return this;
 	}
 

@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import com.coreoz.windmill.exports.config.ExportConfig;
 import com.coreoz.windmill.exports.config.ExportHeaderMapping;
+import com.coreoz.windmill.exports.exporters.excel.ExportExcelConfig;
 import com.coreoz.windmill.files.FileSource;
 import com.coreoz.windmill.files.ParserGuesserTest;
 import com.coreoz.windmill.imports.Cell;
@@ -20,16 +21,19 @@ import com.coreoz.windmill.imports.Row;
 
 import lombok.Value;
 
+/**
+ * Integration tests for Windmill
+ */
 public class WindmillTest {
 
 	@Test
 	public void should_export_as_xlsx_with_header() {
-		byte[] xlsExport = exportBase()
+		byte[] xlsxExport = exportBase()
 			.withHeaderMapping(exportHeaderMapping())
 			.asExcel()
 			.toByteArray();
 
-		tryParseHeaderFile(FileSource.of(xlsExport));
+		tryParseHeaderFile(FileSource.of(xlsxExport));
 	}
 
 	@Test
@@ -44,12 +48,12 @@ public class WindmillTest {
 
 	@Test
 	public void should_export_as_xlsx_no_header() {
-		byte[] xlsExport = exportBase()
+		byte[] xlsxExport = exportBase()
 			.withNoHeaderMapping(exportNoHeaderMapping())
 			.asExcel()
 			.toByteArray();
 
-		tryParseNoHeaderFile(FileSource.of(xlsExport));
+		tryParseNoHeaderFile(FileSource.of(xlsxExport));
 	}
 
 	@Test
@@ -60,6 +64,40 @@ public class WindmillTest {
 			.toByteArray();
 
 		tryParseNoHeaderFile(FileSource.of(csvExport));
+	}
+
+	@Test
+	public void should_export_excel_data_starting_from_a_non_origin_point() {
+		byte[] xlsxExport = exportBase()
+			.withNoHeaderMapping(exportNoHeaderMapping())
+			// we are using an existing file to write the new data,
+			// else POI will simply ignore the first empty rows and the test will be biased
+			.asExcel(ExportExcelConfig.fromWorkbook(loadFile("/import.xlsx")).build("Feuil1").withOrigin(6, 3))
+			.toByteArray();
+
+		// check that the first rows are not modified
+		try (Stream<Row> rowStream = Windmill.parse(FileSource.of(xlsxExport))) {
+			List<Import> result = rowStream
+				.skip(1)
+				.limit(2)
+				.map(this::parsingFunction)
+				.collect(Collectors.toList());
+
+			assertThat(result).containsExactlyElementsOf(data());
+		}
+
+		try (Stream<Row> rowStream = Windmill.parse(FileSource.of(xlsxExport))) {
+			List<Import> result = rowStream.skip(3).map(row -> Import.of(
+				row.cell(6).asString(),
+				row.cell(7).asString(),
+				row.cell(8).asString(),
+				row.cell(9).asInteger().value(),
+				row.cell(10).asDouble().value()
+			))
+			.collect(Collectors.toList());
+
+			assertThat(result).containsExactlyElementsOf(data());
+		}
 	}
 
 	@Test
@@ -165,17 +203,21 @@ public class WindmillTest {
 
 	private void tryParseNoHeaderFile(FileSource fileSource) {
 		try (Stream<Row> rowStream = Windmill.parse(fileSource)) {
-			List<Import> result = rowStream.map(row -> Import.of(
-				row.cell(0).asString(),
-				row.cell(1).asString(),
-				row.cell(2).asString(),
-				row.cell(3).asInteger().value(),
-				row.cell(4).asDouble().value()
-			))
+			List<Import> result = rowStream.map(this::parsingFunction)
 			.collect(Collectors.toList());
 
 			assertThat(result).containsExactlyElementsOf(data());
 		}
+	}
+
+	private Import parsingFunction(Row row) {
+		return Import.of(
+			row.cell(0).asString(),
+			row.cell(1).asString(),
+			row.cell(2).asString(),
+			row.cell(3).asInteger().value(),
+			row.cell(4).asDouble().value()
+		);
 	}
 
 	private void checkInexistantCell(String fileName) {
