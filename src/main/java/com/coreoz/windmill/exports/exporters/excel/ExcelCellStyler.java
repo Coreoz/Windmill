@@ -5,6 +5,9 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Workbook;
 
+/**
+ * Define how to style each cell in the export
+ */
 public interface ExcelCellStyler {
 
 	void initialize(Workbook workbook);
