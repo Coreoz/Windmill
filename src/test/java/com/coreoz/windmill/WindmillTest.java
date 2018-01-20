@@ -126,6 +126,16 @@ public class WindmillTest {
 	}
 
 	@Test
+	public void should_parse_xlsx_with_formula_as_string() throws Exception {
+		assertThat(parseFormulaFile().cell(2).asString()).isEqualTo("3");
+	}
+
+	@Test
+	public void should_parse_xlsx_with_formula_as_integer() throws Exception {
+		assertThat(parseFormulaFile().cell(2).asInteger().value()).isEqualTo(3);
+	}
+
+	@Test
 	public void should_parse_xlsx_with_trimmed_values() {
 		List<Import> result = Parsers
 			.xlsx()
@@ -219,6 +229,15 @@ public class WindmillTest {
 			row.cell(4).asDouble().value()
 		);
 	}
+
+	private Row parseFormulaFile() {
+		return Parsers
+			.xlsx()
+			.trimValues()
+			.parse(loadFile("/formula.xlsx"))
+			.findAny()
+			.get();
+	};
 
 	private void checkInexistantCell(String fileName) {
 		Row firstRow = Windmill

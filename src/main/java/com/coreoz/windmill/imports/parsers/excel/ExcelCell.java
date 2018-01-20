@@ -31,9 +31,9 @@ class ExcelCell implements Cell {
 			// POI sometimes returns null when a cell is empty...
 			return null;
 		}
-		if (excelCell.getCellTypeEnum() == CellType.NUMERIC) {
+		if (excelCell.getCellTypeEnum() == CellType.NUMERIC
+			|| excelCell.getCellTypeEnum() == CellType.FORMULA) {
 			excelCell.setCellType(CellType.STRING);
-			return emptyToNull(excelCell.getStringCellValue());
 		}
 		return emptyToNullTrimmed(excelCell.getRichStringCellValue().getString(), trimValue);
 	}
@@ -70,14 +70,15 @@ class ExcelCell implements Cell {
 	}
 
 	private<T> T tryGetValue(Function<Double, T> cast) {
-		if (excelCell != null && excelCell.getCellTypeEnum() == CellType.NUMERIC) {
-			return cast.apply(excelCell.getNumericCellValue());
+		if (excelCell != null) {
+			if (excelCell.getCellTypeEnum() == CellType.FORMULA) {
+				excelCell.setCellType(CellType.NUMERIC);
+			}
+			if(excelCell.getCellTypeEnum() == CellType.NUMERIC) {
+				return cast.apply(excelCell.getNumericCellValue());
+			}
 		}
 		return null;
-	}
-
-	private static String emptyToNull(String value) {
-		return "".equals(value) ? null : value;
 	}
 
 	private static String emptyToNullTrimmed(String value, boolean shouldTrim) {
