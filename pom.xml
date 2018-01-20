@@ -4,7 +4,7 @@
 
 	<groupId>com.coreoz</groupId>
 	<artifactId>windmill</artifactId>
-	<version>1.1.1</version>
+	<version>1.1.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Windmill</name>
@@ -37,7 +37,7 @@
 		<developerConnection>scm:git:git@github.com:Coreoz/Windmill.git</developerConnection>
 		<connection>scm:git:git@github.com:Coreoz/Windmill.git</connection>
 		<url>https://github.com/Coreoz/Windmill</url>
-		<tag>1.1.1</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<distributionManagement>
