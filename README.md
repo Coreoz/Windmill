@@ -5,8 +5,11 @@ Windmill
 [![Coverage Status](https://coveralls.io/repos/github/Coreoz/Windmill/badge.svg?branch=master)](https://coveralls.io/github/Coreoz/Windmill?branch=master)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.coreoz/windmill/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.coreoz/windmill)
 
-Windmill is a library to import or export Excel and CSV files through a fluent API
+Windmill is a library to parse or write Excel and CSV files through a fluent API
 that takes advantage of Java 8 Stream and Lambda features.
+
+Windmill targets the writing/parsing of List/Collection data.
+It will especially stand out for use cases like exporting/importing a result set from/to a database.
 
 It is based on the projects [Apache POI](https://poi.apache.org/)
 and [OpenCSV](http://opencsv.sourceforge.net/) to manipulate Excel and CSV files.
@@ -22,8 +25,8 @@ Include Windmill in your project:
 </dependency>
 ```
 
-Import
-------
+Import/Parsing
+--------------
 Here is an import example:
 ```java
 try (Stream<Row> rowStream = Windmill.parse(FileSource.of(new FileInputStream("myFile.xlsx")))) {
@@ -58,8 +61,8 @@ Stream<Row> rowStream = Parsers
   .parse(FileSource.of(new FileInputStream("myFile.csv")));
 ```
 
-Export
-------
+Export/Writing
+--------------
 Here is an export example:
 ```java
 Windmill
