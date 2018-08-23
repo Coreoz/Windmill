@@ -1,15 +1,14 @@
 package com.coreoz.windmill.exports.exporters.csv;
 
+import com.coreoz.windmill.exports.config.ExportMapping;
+import com.opencsv.CSVWriter;
+import lombok.SneakyThrows;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
-
-import com.coreoz.windmill.exports.config.ExportMapping;
-import com.opencsv.CSVWriter;
-
-import lombok.SneakyThrows;
 
 public class CsvExporter<T> {
 
@@ -71,7 +70,7 @@ public class CsvExporter<T> {
 			for (int i = 0; i < headerColumn.size(); i++) {
 				csvRowValues[i] = stringValue(headerColumn.get(i));
 			}
-			csvWriter.writeNext(csvRowValues);
+			csvWriter.writeNext(csvRowValues,!exportConfig.isDisabledQuotes());
 		}
 	}
 
@@ -81,7 +80,7 @@ public class CsvExporter<T> {
 		for (int i = 0; i < mapping.columnsCount(); i++) {
 			csvRowValues[i] = stringValue(mapping.cellValue(i, row));
 		}
-		csvWriter.writeNext(csvRowValues);
+		csvWriter.writeNext(csvRowValues, !exportConfig.isDisabledQuotes());
 		csvWriter.flush();
 	}
 
