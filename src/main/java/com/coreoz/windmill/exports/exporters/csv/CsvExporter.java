@@ -71,7 +71,7 @@ public class CsvExporter<T> {
 			for (int i = 0; i < headerColumn.size(); i++) {
 				csvRowValues[i] = stringValue(headerColumn.get(i));
 			}
-			csvWriter.writeNext(csvRowValues,!exportConfig.isApplyQuotesToAll());
+			csvWriter.writeNext(csvRowValues,exportConfig.isApplyQuotesToAll());
 		}
 	}
 
@@ -81,7 +81,7 @@ public class CsvExporter<T> {
 		for (int i = 0; i < mapping.columnsCount(); i++) {
 			csvRowValues[i] = stringValue(mapping.cellValue(i, row));
 		}
-		csvWriter.writeNext(csvRowValues, !exportConfig.isApplyQuotesToAll());
+		csvWriter.writeNext(csvRowValues, exportConfig.isApplyQuotesToAll());
 		csvWriter.flush();
 	}
 
