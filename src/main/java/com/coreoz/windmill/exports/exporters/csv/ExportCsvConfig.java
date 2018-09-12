@@ -23,5 +23,8 @@ public class ExportCsvConfig {
 	@Builder.Default private final char escapeChar = ICSVParser.DEFAULT_ESCAPE_CHARACTER;
 	/** The line feed terminator to use */
 	@Builder.Default private final String lineEnd = CSVWriter.DEFAULT_LINE_END;
+	/** The boolean to use for applying or not optional wrapping quotes  */
+	@Builder.Default private final boolean applyQuotesToAll = true;
+
 
 }
