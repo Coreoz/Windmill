@@ -1,4 +1,4 @@
-package com.coreoz.windmill.exports.config;
+package com.coreoz.windmill.exports.mapping;
 
 import java.util.List;
 

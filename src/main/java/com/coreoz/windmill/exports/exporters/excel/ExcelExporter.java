@@ -1,72 +1,42 @@
 package com.coreoz.windmill.exports.exporters.excel;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import com.coreoz.windmill.Exporter;
+import com.coreoz.windmill.exports.mapping.ExportMapping;
+import lombok.SneakyThrows;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
+import org.apache.poi.ss.usermodel.Workbook;
+
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
-import org.apache.poi.ss.usermodel.Workbook;
+public class ExcelExporter<T> implements Exporter<T> {
 
-import com.coreoz.windmill.exports.config.ExportMapping;
-
-import lombok.SneakyThrows;
-
-public class ExcelExporter<T> {
-
-	private final Iterable<T> rows;
 	private final ExportMapping<T> mapping;
 	private final ExportExcelConfig sheetConfig;
 	private Row currentExcelRow;
 
-	public ExcelExporter(Iterable<T> rows, ExportMapping<T> mapping, ExportExcelConfig sheetConfig) {
-		this.rows = rows;
+	public ExcelExporter(ExportMapping<T> mapping, ExportExcelConfig sheetConfig) {
 		this.mapping = mapping;
 		this.sheetConfig = sheetConfig;
 		this.currentExcelRow = null;
 	}
 
-	/**
-	 * Write the export file in the {@link Workbook}
-	 *
-	 * @return The {@link Workbook} in which the export has been written
-	 */
-	public Workbook write() {
-		writeRows();
-		return sheetConfig.sheet().getWorkbook();
+	public ExcelExporter<T> writeRow(T row) {
+		initializeExcelRow();
+		for (int i = 0; i < mapping.columnsCount(); i++) {
+			setCellValue(mapping.cellValue(i, row), i);
+		}
+
+		return this;
 	}
 
-	/**
-	 * Write the export file in an existing {@link OutputStream}.
-	 *
-	 * This {@link OutputStream} will not be closed automatically:
-	 * it should be closed manually after this method is called.
-	 *
-	 * @throws IOException if anything can't be written.
-	 */
-	@SneakyThrows
-	public OutputStream writeTo(OutputStream outputStream) {
-		write().write(outputStream);
-		return outputStream;
-	}
-
-	/**
-	 * @throws IOException if anything can't be written.
-	 */
-	public byte[] toByteArray() {
-		ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
-		writeTo(byteOutputStream);
-		return byteOutputStream.toByteArray();
-	}
-
-	// internals
-
-	private void writeRows() {
+	@Override
+	public ExcelExporter<T> writeRows(Iterable<T> rows) {
 		writeHeaderRow();
 
 		for(T row : rows) {
@@ -74,6 +44,14 @@ public class ExcelExporter<T> {
 		}
 
 		setAutoSizeColumns();
+		return this;
+	}
+
+	@Override
+	@SneakyThrows
+	public void writeInto(OutputStream outputStream) {
+		Workbook workbook = sheetConfig.sheet().getWorkbook();
+		workbook.write(outputStream);
 	}
 
 	private void writeHeaderRow() {
@@ -89,13 +67,6 @@ public class ExcelExporter<T> {
 	private void setAutoSizeColumns() {
 		for (int i = 0; i < mapping.columnsCount(); i++) {
 			sheetConfig.sheet().autoSizeColumn(i);
-		}
-	}
-
-	private void writeRow(T row) {
-		initializeExcelRow();
-		for (int i = 0; i < mapping.columnsCount(); i++) {
-			setCellValue(mapping.cellValue(i, row), i);
 		}
 	}
 
@@ -145,5 +116,4 @@ public class ExcelExporter<T> {
 			cell.setCellValue(value.toString());
 		}
 	}
-
 }

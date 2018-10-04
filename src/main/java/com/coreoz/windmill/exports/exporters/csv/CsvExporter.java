@@ -1,95 +1,93 @@
 package com.coreoz.windmill.exports.exporters.csv;
 
+import com.coreoz.windmill.Exporter;
+import com.coreoz.windmill.exports.mapping.ExportMapping;
+import com.opencsv.CSVWriter;
+import lombok.SneakyThrows;
+import org.apache.commons.lang3.ObjectUtils;
+
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
-import com.coreoz.windmill.exports.config.ExportMapping;
-import com.opencsv.CSVWriter;
+public class CsvExporter<T> implements Exporter<T> {
 
-import lombok.SneakyThrows;
-
-public class CsvExporter<T> {
-
-	private final Iterable<T> rows;
 	private final ExportMapping<T> mapping;
 	private final ExportCsvConfig exportConfig;
 	private CSVWriter csvWriter;
+	private ByteArrayOutputStream intermediate;
 
-	public CsvExporter(Iterable<T> rows, ExportMapping<T> mapping, ExportCsvConfig exportConfig) {
-		this.rows = rows;
+	public CsvExporter(ExportMapping<T> mapping, ExportCsvConfig exportConfig) {
 		this.mapping = mapping;
 		this.exportConfig = exportConfig;
 	}
 
-	/**
-	 * Write the export file in an existing {@link OutputStream}.
-	 *
-	 * This {@link OutputStream} will not be closed automatically:
-	 * it should be closed manually after this method is called.
-	 *
-	 * @throws IOException if anything can't be written.
-	 */
 	@SneakyThrows
-	public OutputStream writeTo(OutputStream outputStream) {
-		csvWriter = new CSVWriter(
-			new OutputStreamWriter(outputStream, exportConfig.getCharset()),
-			exportConfig.getSeparator(),
-			exportConfig.getQuoteChar(),
-			exportConfig.getEscapeChar(),
-			exportConfig.getLineEnd()
-		);
-		writeRows();
-		return outputStream;
+	public CsvExporter<T> writeRow(T row) {
+		String[] csvRowValues = new String[mapping.columnsCount()];
+		for (int i = 0; i < mapping.columnsCount(); i++) {
+			Object value = ObjectUtils.defaultIfNull(mapping.cellValue(i, row), "");
+			csvRowValues[i] = String.valueOf(value);
+		}
+
+		getWriter().writeNext(csvRowValues, exportConfig.isApplyQuotesToAll());
+		getWriter().flush();
+
+		return this;
 	}
 
-	/**
-	 * @throws IOException if anything can't be written.
-	 */
-	public byte[] toByteArray() {
-		ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
-		writeTo(byteOutputStream);
-		return byteOutputStream.toByteArray();
-	}
-
-	// internals
-
-	private void writeRows() {
+	@Override
+	public CsvExporter<T> writeRows(Iterable<T> rows) {
 		writeHeaderRow();
 
 		for(T row : rows) {
 			writeRow(row);
 		}
+
+		return this;
+	}
+
+	@Override
+	@SneakyThrows
+	public void writeInto(OutputStream outputStream) {
+		if (csvWriter == null) {
+			this.csvWriter = initializeWriter(outputStream);
+		} else {
+			outputStream.write(intermediate.toByteArray());
+		}
+	}
+
+	private CSVWriter initializeWriter(OutputStream outputStream) {
+		return new CSVWriter(
+				new OutputStreamWriter(outputStream, exportConfig.getCharset()),
+				exportConfig.getSeparator(),
+				exportConfig.getQuoteChar(),
+				exportConfig.getEscapeChar(),
+				exportConfig.getLineEnd()
+		);
 	}
 
 	private void writeHeaderRow() {
 		List<String> headerColumn = mapping.headerColumns();
-		if(!headerColumn.isEmpty()) {
+		if (!headerColumn.isEmpty()) {
 			String[] csvRowValues = new String[headerColumn.size()];
 			for (int i = 0; i < headerColumn.size(); i++) {
-				csvRowValues[i] = stringValue(headerColumn.get(i));
+				String value = ObjectUtils.defaultIfNull(headerColumn.get(i), "");
+				csvRowValues[i] = value;
 			}
-			csvWriter.writeNext(csvRowValues,exportConfig.isApplyQuotesToAll());
+
+			getWriter().writeNext(csvRowValues,exportConfig.isApplyQuotesToAll());
 		}
 	}
 
-	@SneakyThrows
-	private void writeRow(T row) {
-		String[] csvRowValues = new String[mapping.columnsCount()];
-		for (int i = 0; i < mapping.columnsCount(); i++) {
-			csvRowValues[i] = stringValue(mapping.cellValue(i, row));
+	private CSVWriter getWriter() {
+		if (csvWriter == null) {
+			// initialize intermediate buffer for written rows
+			intermediate = new ByteArrayOutputStream();
+			csvWriter = initializeWriter(intermediate);
 		}
-		csvWriter.writeNext(csvRowValues, exportConfig.isApplyQuotesToAll());
-		csvWriter.flush();
-	}
 
-	private String stringValue(final Object object) {
-		if (object == null) {
-			return "";
-		}
-		return object.toString();
+		return csvWriter;
 	}
-
 }

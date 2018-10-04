@@ -1,25 +1,23 @@
 package com.coreoz.windmill;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.junit.Test;
-
-import com.coreoz.windmill.exports.config.ExportConfig;
-import com.coreoz.windmill.exports.config.ExportHeaderMapping;
 import com.coreoz.windmill.exports.exporters.excel.ExportExcelConfig;
+import com.coreoz.windmill.exports.mapping.ExportHeaderMapping;
 import com.coreoz.windmill.files.FileSource;
 import com.coreoz.windmill.files.ParserGuesserTest;
 import com.coreoz.windmill.imports.Cell;
 import com.coreoz.windmill.imports.Parsers;
 import com.coreoz.windmill.imports.Row;
+import org.junit.Test;
 
-import lombok.Value;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Integration tests for Windmill
@@ -28,9 +26,10 @@ public class WindmillTest {
 
 	@Test
 	public void should_export_as_xlsx_with_header() {
-		byte[] xlsxExport = exportBase()
-			.withHeaderMapping(exportHeaderMapping())
+		byte[] xlsxExport = Exporter.<Import>builder()
+			.withExportMapping(exportHeaderMapping())
 			.asExcel()
+			.writeRows(data())
 			.toByteArray();
 
 		tryParseHeaderFile(FileSource.of(xlsxExport));
@@ -38,41 +37,67 @@ public class WindmillTest {
 
 	@Test
 	public void should_export_as_csv_with_header() {
-		byte[] csvExport = exportBase()
-			.withHeaderMapping(exportHeaderMapping())
-			.asCsv()
-			.toByteArray();
+		byte[] csvExport = Exporter.<Import>builder()
+				.withExportMapping(exportHeaderMapping())
+				.asCsv()
+				.writeRows(data())
+				.toByteArray();
 
 		tryParseHeaderFile(FileSource.of(csvExport));
 	}
 
 	@Test
+	public void should_export_as_csv_with_header_by_properties() {
+		byte[] csvExport = Windmill.<Import>exporter()
+				.withHeaders()
+				.withType(Import.class)
+				.asCsv()
+				.writeRows(data())
+				.toByteArray();
+
+        List<Import> result = Windmill.<Import>importer()
+                .source(FileSource.of(csvExport))
+                .withHeaders()
+                .withType(Import.class)
+                .stream()
+                .collect(Collectors.toList());
+
+        assertThat(result).containsExactlyElementsOf(data());
+	}
+
+	@Test
 	public void should_export_as_xlsx_no_header() {
-		byte[] xlsxExport = exportBase()
-			.withNoHeaderMapping(exportNoHeaderMapping())
-			.asExcel()
-			.toByteArray();
+		byte[] xlsxExport = Exporter.<Import>builder()
+				.withoutHeaders()
+				.columns(exportNoHeaderMapping())
+			 	.asExcel()
+				.writeRows(data())
+				.toByteArray();
 
 		tryParseNoHeaderFile(FileSource.of(xlsxExport));
 	}
 
 	@Test
 	public void should_export_as_csv_with_no_header() {
-		byte[] csvExport = exportBase()
-			.withNoHeaderMapping(exportNoHeaderMapping())
-			.asCsv()
-			.toByteArray();
+		byte[] csvExport = Exporter.<Import>builder()
+				.withoutHeaders()
+				.columns(exportNoHeaderMapping())
+				.asCsv()
+				.writeRows(data())
+				.toByteArray();
 
 		tryParseNoHeaderFile(FileSource.of(csvExport));
 	}
 
 	@Test
 	public void should_export_excel_data_starting_from_a_non_origin_point() {
-		byte[] xlsxExport = exportBase()
-			.withNoHeaderMapping(exportNoHeaderMapping())
+		byte[] xlsxExport = Exporter.<Import>builder()
+			.withoutHeaders()
+			.columns(exportNoHeaderMapping())
 			// we are using an existing file to write the new data,
 			// else POI will simply ignore the first empty rows and the test will be biased
 			.asExcel(ExportExcelConfig.fromWorkbook(loadFile("/import.xlsx")).build("Feuil1").withOrigin(6, 3))
+			.writeRows(data())
 			.toByteArray();
 
 		// check that the first rows are not modified
@@ -159,17 +184,15 @@ public class WindmillTest {
 		);
 	}
 
-	private ExportConfig<Import> exportBase() {
-		return Windmill.export(data());
-	}
-
 	private ExportHeaderMapping<Import> exportHeaderMapping() {
-		return new ExportHeaderMapping<Import>()
-			.add("a", Import::getA)
-			.add("b", Import::getB)
-			.add("c", Import::getC)
-			.add("Integer number", Import::getIntegerNumber)
-			.add("Double number", Import::getDoubleNumber);
+		Map<String, Function<Import, ?>> toValues = new LinkedHashMap<>();
+		toValues.put("a", Import::getA);
+		toValues.put("b", Import::getB);
+		toValues.put("c", Import::getC);
+		toValues.put("Integer number", Import::getIntegerNumber);
+		toValues.put("Double number", Import::getDoubleNumber);
+
+		return new ExportHeaderMapping<>(toValues);
 	}
 
 	private List<Function<Import, ?>> exportNoHeaderMapping() {
@@ -259,14 +282,4 @@ public class WindmillTest {
 		assertThat(inexistantCellByIndex.asString()).isNull();
 		assertThat(inexistantCellByIndex.asLong().isNull()).isTrue();
 	}
-
-	@Value(staticConstructor = "of")
-	private static class Import {
-		private String a;
-		private String b;
-		private String c;
-		private Integer integerNumber;
-		private Double doubleNumber;
-	}
-
 }

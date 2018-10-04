@@ -1,11 +1,10 @@
 package com.coreoz.windmill.exports.exporters.excel;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-
+import com.coreoz.windmill.files.FileSource;
 import org.junit.Test;
 
-import com.coreoz.windmill.files.FileSource;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class ExportExcelConfigTest {
 
@@ -17,14 +16,14 @@ public class ExportExcelConfigTest {
 			exportConfig.withOrigin(1, -1);
 			fail("Should not accept negative row index");
 		} catch (IllegalArgumentException e) {
-			// as expected
+			// withType expected
 		}
 
 		try {
 			exportConfig.withOrigin(-1, 0);
 			fail("Should not accept negative column index");
 		} catch (IllegalArgumentException e) {
-			// as expected
+			// withType expected
 		}
 	}
 
@@ -67,7 +66,7 @@ public class ExportExcelConfigTest {
 			);
 			fail("Should not accept non excel files");
 		} catch (IllegalArgumentException e) {
-			// as expected
+			// withType expected
 		}
 	}
 
