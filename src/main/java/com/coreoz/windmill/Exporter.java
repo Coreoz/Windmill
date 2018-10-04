@@ -49,7 +49,7 @@ public interface Exporter<T> extends Consumer<T> {
     interface InitialState<T> {
         NamedValueMapperStage<T> withHeaders();
         ValueMapperStage<T> withoutHeaders();
-        PresentationState<T> withExportMapping(ExportMapping mapping);
+        PresentationState<T> withExportMapping(ExportMapping<T> mapping);
     }
 
     interface ValueMapperStage<T> extends BaseValueMapperStage<T> {
@@ -130,7 +130,7 @@ public interface Exporter<T> extends Consumer<T> {
         }
 
         @Override
-        public PresentationState<T> withExportMapping(ExportMapping mapping) {
+        public PresentationState<T> withExportMapping(ExportMapping<T> mapping) {
             this.headerMapping = mapping;
             return this;
         }
