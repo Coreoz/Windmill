@@ -74,7 +74,7 @@ Windmill
     .writeRows(Arrays.asList(bean1, bean2, bean3))
     .writeInto(new FileOutputStream("Export.xlsx"));
 ```
-And import example:
+And an import example:
 ```java
 Windmill
     .importer()

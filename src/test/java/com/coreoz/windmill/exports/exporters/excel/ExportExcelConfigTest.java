@@ -16,14 +16,14 @@ public class ExportExcelConfigTest {
 			exportConfig.withOrigin(1, -1);
 			fail("Should not accept negative row index");
 		} catch (IllegalArgumentException e) {
-			// withType expected
+			// as expected
 		}
 
 		try {
 			exportConfig.withOrigin(-1, 0);
 			fail("Should not accept negative column index");
 		} catch (IllegalArgumentException e) {
-			// withType expected
+			// as expected
 		}
 	}
 
@@ -66,7 +66,7 @@ public class ExportExcelConfigTest {
 			);
 			fail("Should not accept non excel files");
 		} catch (IllegalArgumentException e) {
-			// withType expected
+			// as expected
 		}
 	}
 
