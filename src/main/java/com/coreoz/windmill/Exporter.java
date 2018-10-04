@@ -7,7 +7,6 @@ import com.coreoz.windmill.exports.exporters.excel.ExportExcelConfig;
 import com.coreoz.windmill.exports.mapping.ExportHeaderMapping;
 import com.coreoz.windmill.exports.mapping.ExportMapping;
 import com.coreoz.windmill.exports.mapping.NoHeaderDecorator;
-import com.coreoz.windmill.utils.BeanPropertyUtils;
 import org.apache.commons.collections4.map.LinkedMap;
 
 import java.io.IOException;
@@ -47,18 +46,14 @@ public interface Exporter<T> extends Consumer<T> {
         PresentationState<T> withExportMapping(ExportMapping<T> mapping);
     }
 
-    interface ValueMapperStage<T> extends BaseValueMapperStage<T> {
+    interface ValueMapperStage<T> extends PresentationState<T> {
         ValueMapperStage<T> column(Function<T, ?> applier);
         PresentationState<T> columns(Collection<Function<T, ?>> appliers);
     }
 
-    interface NamedValueMapperStage<T> extends BaseValueMapperStage<T> {
+    interface NamedValueMapperStage<T> extends PresentationState<T> {
         NamedValueMapperStage<T> column(String name, Function<T, ?> applier);
         PresentationState<T> columns(Map<String, Function<T, ?>> appliers);
-    }
-
-    interface BaseValueMapperStage<T> extends PresentationState<T> {
-        PresentationState<T> withType(Class<T> beanClass);
     }
 
     interface PresentationState<T> {
@@ -114,13 +109,6 @@ public interface Exporter<T> extends Consumer<T> {
         @Override
         public PresentationState<T> columns(Map<String, Function<T, ?>> appliers) {
             toValues.putAll(appliers);
-            return this;
-        }
-
-        @Override
-        public PresentationState<T> withType(Class<T> beanClass) {
-            LinkedMap<String, Function<T, ?>> accessor = BeanPropertyUtils.beanPropertiesAccessor(beanClass);
-            this.headerMapping = new ExportHeaderMapping<>(accessor);
             return this;
         }
 

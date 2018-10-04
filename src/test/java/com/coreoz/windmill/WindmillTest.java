@@ -7,7 +7,6 @@ import com.coreoz.windmill.files.ParserGuesserTest;
 import com.coreoz.windmill.imports.Cell;
 import com.coreoz.windmill.imports.Parsers;
 import com.coreoz.windmill.imports.Row;
-import com.coreoz.windmill.utils.BeanPropertyUtils;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -49,21 +48,30 @@ public class WindmillTest {
 
 	@Test
 	public void should_export_as_csv_with_header_by_properties() {
-		byte[] csvExport = Windmill.<Import>exporter()
+        List<Import> data = Arrays.asList(
+                Import.builder().a("a1").b("b1").build(),
+                Import.builder().a("a2").b("b2").build()
+        );
+
+        byte[] csvExport = Windmill.<Import>exporter()
 				.withHeaders()
-				.withType(Import.class)
+				.column("a", Import::getA)
+				.column("b", Import::getB)
 				.asCsv()
-				.writeRows(data())
+				.writeRows(data)
 				.toByteArray();
 
 		List<Import> result = Windmill.importer()
 				.source(FileSource.of(csvExport))
 				.withHeaders()
 				.stream()
-				.map(BeanPropertyUtils.rowTransformer(Import.class))
+				.map(row -> Import.builder()
+						.a(row.cell(0).asString())
+						.b(row.cell(1).asString())
+						.build())
 				.collect(Collectors.toList());
 
-		assertThat(result).containsExactlyElementsOf(data());
+		assertThat(result).containsExactlyElementsOf(data);
 	}
 
 	@Test
