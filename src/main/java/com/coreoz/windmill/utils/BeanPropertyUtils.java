@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 
 public class BeanPropertyUtils {
 
-    public static <T> Function<Row, ? extends T> rowTransformer(Class<T> targetClass) {
-        return (Function<Row, T>) cells -> {
+    public static <T> Function<Row, T> rowTransformer(Class<T> targetClass) {
+        return cells -> {
             try {
                 return Arrays.stream(PropertyUtils.getPropertyDescriptors(targetClass))
                         .filter(it -> it.getWriteMethod() != null)

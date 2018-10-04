@@ -10,7 +10,6 @@ import com.coreoz.windmill.exports.mapping.NoHeaderDecorator;
 import com.coreoz.windmill.utils.BeanPropertyUtils;
 import org.apache.commons.collections4.map.LinkedMap;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
@@ -35,16 +34,12 @@ public interface Exporter<T> extends Consumer<T> {
      *
      * @throws IOException if anything can't be written.
      */
-    void writeInto(OutputStream outputStream);
+    Exporter<T> writeInto(OutputStream outputStream);
 
     /**
      * @throws IOException if anything can't be written.
      */
-    default byte[] toByteArray() {
-        ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
-        writeInto(byteOutputStream);
-        return byteOutputStream.toByteArray();
-    }
+    byte[] toByteArray();
 
     interface InitialState<T> {
         NamedValueMapperStage<T> withHeaders();
@@ -67,10 +62,10 @@ public interface Exporter<T> extends Consumer<T> {
     }
 
     interface PresentationState<T> {
-        Exporter<T> asCsv();
-        Exporter<T> asCsv(ExportCsvConfig config);
-        Exporter<T> asExcel();
-        Exporter<T> asExcel(ExportExcelConfig config);
+        CsvExporter<T> asCsv();
+        CsvExporter<T> asCsv(ExportCsvConfig config);
+        ExcelExporter<T> asExcel();
+        ExcelExporter<T> asExcel(ExportExcelConfig config);
     }
     
     class Builder<T> implements InitialState<T>, ValueMapperStage<T>, NamedValueMapperStage<T>, PresentationState<T> {
@@ -136,22 +131,22 @@ public interface Exporter<T> extends Consumer<T> {
         }
 
         @Override
-        public Exporter<T> asCsv() {
+        public CsvExporter<T> asCsv() {
             return asCsv(ExportCsvConfig.builder().build());
         }
 
         @Override
-        public Exporter<T> asCsv(ExportCsvConfig config) {
+        public CsvExporter<T> asCsv(ExportCsvConfig config) {
             return new CsvExporter<>(headerMapping, config);
         }
 
         @Override
-        public Exporter<T> asExcel() {
+        public ExcelExporter<T> asExcel() {
             return asExcel(ExportExcelConfig.newXlsxFile().build());
         }
 
         @Override
-        public Exporter<T> asExcel(ExportExcelConfig config) {
+        public ExcelExporter<T> asExcel(ExportExcelConfig config) {
             return new ExcelExporter<>(headerMapping, config);
         }
     }

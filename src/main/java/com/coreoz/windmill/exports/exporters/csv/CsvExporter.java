@@ -48,12 +48,19 @@ public class CsvExporter<T> implements Exporter<T> {
 
 	@Override
 	@SneakyThrows
-	public void writeInto(OutputStream outputStream) {
+	public CsvExporter<T> writeInto(OutputStream outputStream) {
 		if (csvWriter == null) {
 			this.csvWriter = initializeWriter(outputStream);
 		} else {
 			outputStream.write(intermediate.toByteArray());
 		}
+
+		return this;
+	}
+
+	@Override
+	public byte[] toByteArray() {
+		return intermediate.toByteArray();
 	}
 
 	private CSVWriter initializeWriter(OutputStream outputStream) {

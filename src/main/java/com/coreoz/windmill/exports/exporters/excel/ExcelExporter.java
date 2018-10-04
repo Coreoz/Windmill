@@ -9,6 +9,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.Calendar;
@@ -23,6 +24,10 @@ public class ExcelExporter<T> implements Exporter<T> {
 
 	private Row currentExcelRow;
 
+	public Workbook workbook() {
+		return sheetConfig.sheet().getWorkbook();
+	}
+
 	public ExcelExporter<T> writeRow(T row) {
 		initializeExcelRow();
 		for (int i = 0; i < mapping.columnsCount(); i++) {
@@ -30,6 +35,13 @@ public class ExcelExporter<T> implements Exporter<T> {
 		}
 
 		return this;
+	}
+
+	@Override
+	public byte[] toByteArray() {
+		ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+		writeInto(byteOutputStream);
+		return byteOutputStream.toByteArray();
 	}
 
 	@Override
@@ -46,9 +58,10 @@ public class ExcelExporter<T> implements Exporter<T> {
 
 	@Override
 	@SneakyThrows
-	public void writeInto(OutputStream outputStream) {
+	public ExcelExporter<T> writeInto(OutputStream outputStream) {
 		Workbook workbook = sheetConfig.sheet().getWorkbook();
 		workbook.write(outputStream);
+		return this;
 	}
 
 	private void writeHeaderRow() {

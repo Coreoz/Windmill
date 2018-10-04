@@ -66,24 +66,53 @@ Export/Writing
 Here is an export example:
 ```java
 Windmill
-  .export(Arrays.asList(bean1, bean2, bean3))
-  .withHeaderMapping(
-    new ExportHeaderMapping<Bean>()
-      .add("Name", Bean::getName)
-      .add("User login", bean -> bean.getUser().getLogin())
-  )
-  .asExcel()
-  .writeTo(new FileOutputStream("Export.xlsx"));
+    .<Bean>exporter()
+    .withHeaders()
+    .column("Name", Bean::getName)
+    .column("User login", bean -> bean.getUser().getLogin())
+    .asExcel()
+    .writeRows(Arrays.asList(bean1, bean2, bean3))
+    .writeInto(new FileOutputStream("Export.xlsx"));
+```
+And import example:
+```java
+Windmill
+    .importer()
+    .source(FileSource.of(new FileInputStream("Export.xlsx")))
+    .withHeaders()
+    .stream()
+    .map(row -> new Bean(row.cell("Name").asString(), new User(row.cell(1).asString())))
+    .collect(Collectors.toList());
 ```
 
 Options can be passed to the exporter, for example with CSV files,
 it is possible to specify multiple parameters like the separator character or the escape character:
 ```java
 Windmill
-  .export(Arrays.asList(bean1, bean2, bean3))
-  .withNoHeaderMapping(Bean::getName, bean -> bean.getUser().getLogin())
-  .asCsv(ExportCsvConfig.builder().separator(';').escapeChar('"').build());
-  .toByteArray();
+    .<Bean>exporter()
+    .withoutHeaders()
+    .column(Bean::getName)
+    .column(bean -> bean.getUser().getLogin())
+    .asCsv(ExportCsvConfig.builder()
+            .separator(';')
+            .escapeChar('"')
+            .build())
+    .writeRows(Arrays.asList(bean1, bean2, bean3))
+    .toByteArray();
+```
+```java
+Windmill
+    .importer()
+    .source(FileSource.of(bytes))
+    .parser(Parsers.csv(CsvParserConfig.builder()
+            .separator(';')
+            .escapeChar('"')
+            .quoteChar('\'')
+            .build()))
+    .withoutHeaders()
+    .stream()
+    .map(row -> new Bean(row.cell(0).asString(), new User(row.cell(1).asString())))
+    .collect(Collectors.toList());
 ```
 
 It is also possible to export multiple tabs in one Excel workbook:
@@ -91,16 +120,47 @@ It is also possible to export multiple tabs in one Excel workbook:
 Workbook xlsxFile = new XSSFWorkbook();
 
 Windmill
-  .export(Arrays.asList(bean1, bean2, bean3))
-  .withNoHeaderMapping(Bean::getName, bean -> bean.getUser().getLogin())
-  .asExcel(ExportExcelConfig.fromWorkbook(xlsxFile).build("First tab"))
-  .write();
+    .<Bean>exporter()
+    .withoutHeaders()
+    .column(Bean::getName)
+    .column(bean -> bean.getUser().getLogin())
+    .asExcel(ExportExcelConfig.fromWorkbook(xlsxFile)
+            .build("First tab"))
+    .writeRows(Arrays.asList(bean1, bean2, bean3));
 
 Windmill
-  .export(Arrays.asList(film1, film2))
-  .withNoHeaderMapping(Film::getTitle, Film::getReleaseDate)
-  .asExcel(ExportExcelConfig.fromWorkbook(xlsxFile).build("Second tab with films"))
-  .write();
+    .<Film>exporter()
+    .withoutHeaders()
+    .column(Film::getTitle)
+    .column(Film::getReleaseDate)
+    .asExcel(ExportExcelConfig.fromWorkbook(xlsxFile)
+            .build("Second tab with films"))
+    .writeRow(film1)
+    .writeRow(film2);
 
 xlsxFile.write(new FileOutputStream("Export.xlsx"));
+```
+```java
+Windmill
+    .importer()
+    .source(FileSource.of(new FileInputStream("Export.xlsx")))
+    .parser(Parsers.xlsx("First tab"))
+    .withoutHeaders()
+    .stream()
+    .map(row -> new Bean(row.cell(0).asString(), new User(row.cell(1).asString())))
+    .collect(Collectors.toList());
+
+Windmill
+    .importer()
+    .source(FileSource.of(new FileInputStream("Export.xlsx")))
+    .parser(Parsers.xlsx("Second tab with films"))
+    .withoutHeaders()
+    .stream()
+    .map(row -> {
+        String title = row.cell(0).asString();
+        // TODO: create convenient method for custom types
+        Date releaseDate = DateUtil.getJavaDate(row.cell(1).asDouble().value());
+        return new Film(title, releaseDate);
+    })
+    .collect(Collectors.toList());
 ```

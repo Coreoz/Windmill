@@ -23,6 +23,7 @@ public final class Windmill {
 	public static Stream<Row> parse(FileSource fileSource) {
 		return Importer.builder()
 				.source(fileSource)
+				.withoutHeaders()
 				.stream();
 	}
 
@@ -35,10 +36,11 @@ public final class Windmill {
 		return Importer.builder()
 				.source(fileSource)
 				.parser(fileParser)
+				.withoutHeaders()
 				.stream();
 	}
 
-	public static <T> Importer.InitialState<T> importer() {
+	public static Importer.InitialState importer() {
 		return Importer.builder();
 	}
 

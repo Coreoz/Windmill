@@ -7,6 +7,7 @@ import com.coreoz.windmill.files.ParserGuesserTest;
 import com.coreoz.windmill.imports.Cell;
 import com.coreoz.windmill.imports.Parsers;
 import com.coreoz.windmill.imports.Row;
+import com.coreoz.windmill.utils.BeanPropertyUtils;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -55,14 +56,14 @@ public class WindmillTest {
 				.writeRows(data())
 				.toByteArray();
 
-        List<Import> result = Windmill.<Import>importer()
-                .source(FileSource.of(csvExport))
-                .withHeaders()
-                .withType(Import.class)
-                .stream()
-                .collect(Collectors.toList());
+		List<Import> result = Windmill.importer()
+				.source(FileSource.of(csvExport))
+				.withHeaders()
+				.stream()
+				.map(BeanPropertyUtils.rowTransformer(Import.class))
+				.collect(Collectors.toList());
 
-        assertThat(result).containsExactlyElementsOf(data());
+		assertThat(result).containsExactlyElementsOf(data());
 	}
 
 	@Test
