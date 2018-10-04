@@ -3,6 +3,7 @@ package com.coreoz.windmill.exports.exporters.csv;
 import com.coreoz.windmill.Exporter;
 import com.coreoz.windmill.exports.mapping.ExportMapping;
 import com.opencsv.CSVWriter;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.ObjectUtils;
 
@@ -11,17 +12,14 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class CsvExporter<T> implements Exporter<T> {
 
 	private final ExportMapping<T> mapping;
 	private final ExportCsvConfig exportConfig;
+
 	private CSVWriter csvWriter;
 	private ByteArrayOutputStream intermediate;
-
-	public CsvExporter(ExportMapping<T> mapping, ExportCsvConfig exportConfig) {
-		this.mapping = mapping;
-		this.exportConfig = exportConfig;
-	}
 
 	@SneakyThrows
 	public CsvExporter<T> writeRow(T row) {

@@ -1,15 +1,14 @@
 package com.coreoz.windmill.exports.mapping;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.Collections;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class NoHeaderDecorator<T> implements ExportMapping<T> {
 
 	private final ExportMapping<T> delegate;
-
-	public NoHeaderDecorator(ExportMapping<T> delegate) {
-		this.delegate = delegate;
-	}
 
 	@Override
 	public List<String> headerColumns() {
