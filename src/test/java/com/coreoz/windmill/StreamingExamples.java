@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -103,14 +104,15 @@ public class StreamingExamples {
                     .columns(getAppliers());
     }
 
-    private LinkedHashMap<String, Function<Import, ?>> getAppliers() {
-        return new LinkedHashMap<String, Function<Import, ?>>() {{
-            put("a", Import::getA);
-            put("b", Import::getB);
-            put("c", Import::getC);
-            put("d", Import::getDoubleNumber);
-            put("e", Import::getIntegerNumber);
-        }};
+    private Map<String, Function<Import, ?>> getAppliers() {
+        Map<String, Function<Import, ?>> map = new LinkedHashMap<>();
+        map.put("a", Import::getA);
+        map.put("b", Import::getB);
+        map.put("c", Import::getC);
+        map.put("d", Import::getDoubleNumber);
+        map.put("e", Import::getIntegerNumber);
+
+        return map;
     }
 
     private Stream<Import> generate(int limit) {

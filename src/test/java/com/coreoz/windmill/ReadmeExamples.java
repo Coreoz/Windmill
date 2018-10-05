@@ -27,26 +27,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ReadmeExamples {
 
-    @Data
-    @Builder
-    public static class Bean {
-        private String name;
-        private User user;
-    }
-
-    @Data
-    @Builder
-    public static class User {
-        private String login;
-    }
-
-    @Data
-    @Builder
-    public static class Film {
-        private String title;
-        private Date releaseDate;
-    }
-
     private static final Bean bean1 = Bean.builder()
             .name("first name")
             .user(new User("first login"))
@@ -71,6 +51,26 @@ public class ReadmeExamples {
             .title("second title")
             .releaseDate(new Date())
             .build();
+
+    @Data
+    @Builder
+    public static class Bean {
+        private String name;
+        private User user;
+    }
+
+    @Data
+    @Builder
+    public static class User {
+        private String login;
+    }
+
+    @Data
+    @Builder
+    public static class Film {
+        private String title;
+        private Date releaseDate;
+    }
 
     @AfterClass
     public static void tearDown() throws Exception {

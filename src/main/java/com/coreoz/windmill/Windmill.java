@@ -44,15 +44,6 @@ public final class Windmill {
 		return Importer.builder();
 	}
 
-	/**
-	 * Prepare a file export
-	 * @param rows The rows that will be exported to a file
-	 */
-	@Deprecated
-	public static<T> void export(Iterable<T> rows) {
-		throw new UnsupportedOperationException("Use exporter() method instead!");
-	}
-
 	public static <T> Exporter.InitialState<T> exporter() {
 		return Exporter.builder();
 	}
