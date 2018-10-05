@@ -60,6 +60,10 @@ public class CsvExporter<T> implements Exporter<T> {
 
 	@Override
 	public byte[] toByteArray() {
+	    if (intermediate == null) {
+	        throw new IllegalStateException("The state has already been flushed to another output stream");
+        }
+
 		return intermediate.toByteArray();
 	}
 
