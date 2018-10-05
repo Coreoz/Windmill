@@ -20,9 +20,12 @@ public class CsvExporter<T> implements Exporter<T> {
 
 	private CSVWriter csvWriter;
 	private ByteArrayOutputStream intermediate;
+	private boolean isHeaderInitialized;
 
 	@SneakyThrows
 	public CsvExporter<T> writeRow(T row) {
+		writeHeaderRowIfRequired();
+
 		String[] csvRowValues = new String[mapping.columnsCount()];
 		for (int i = 0; i < mapping.columnsCount(); i++) {
 			Object value = ObjectUtils.defaultIfNull(mapping.cellValue(i, row), "");
@@ -37,8 +40,6 @@ public class CsvExporter<T> implements Exporter<T> {
 
 	@Override
 	public CsvExporter<T> writeRows(Iterable<T> rows) {
-		writeHeaderRow();
-
 		for(T row : rows) {
 			writeRow(row);
 		}
@@ -77,16 +78,20 @@ public class CsvExporter<T> implements Exporter<T> {
 		);
 	}
 
-	private void writeHeaderRow() {
-		List<String> headerColumn = mapping.headerColumns();
-		if (!headerColumn.isEmpty()) {
-			String[] csvRowValues = new String[headerColumn.size()];
-			for (int i = 0; i < headerColumn.size(); i++) {
-				String value = ObjectUtils.defaultIfNull(headerColumn.get(i), "");
-				csvRowValues[i] = value;
+	private void writeHeaderRowIfRequired() {
+		if (!isHeaderInitialized) {
+			List<String> headerColumn = mapping.headerColumns();
+			if (!headerColumn.isEmpty()) {
+				String[] csvRowValues = new String[headerColumn.size()];
+				for (int i = 0; i < headerColumn.size(); i++) {
+					String value = ObjectUtils.defaultIfNull(headerColumn.get(i), "");
+					csvRowValues[i] = value;
+				}
+
+				getWriter().writeNext(csvRowValues, exportConfig.isApplyQuotesToAll());
 			}
 
-			getWriter().writeNext(csvRowValues,exportConfig.isApplyQuotesToAll());
+			isHeaderInitialized = true;
 		}
 	}
 

@@ -23,12 +23,15 @@ public class ExcelExporter<T> implements Exporter<T> {
 	private final ExportExcelConfig sheetConfig;
 
 	private Row currentExcelRow;
+	private boolean isHeaderInitialized;
 
 	public Workbook workbook() {
 		return sheetConfig.sheet().getWorkbook();
 	}
 
 	public ExcelExporter<T> writeRow(T row) {
+		writeHeaderRowIfRequired();
+
 		initializeExcelRow();
 		for (int i = 0; i < mapping.columnsCount(); i++) {
 			setCellValue(mapping.cellValue(i, row), i);
@@ -46,8 +49,6 @@ public class ExcelExporter<T> implements Exporter<T> {
 
 	@Override
 	public ExcelExporter<T> writeRows(Iterable<T> rows) {
-		writeHeaderRow();
-
 		for(T row : rows) {
 			writeRow(row);
 		}
@@ -64,13 +65,17 @@ public class ExcelExporter<T> implements Exporter<T> {
 		return this;
 	}
 
-	private void writeHeaderRow() {
-		List<String> headerColumn = mapping.headerColumns();
-		if(!headerColumn.isEmpty()) {
-			initializeExcelRow();
-			for (int i = 0; i < headerColumn.size(); i++) {
-				setCellValue(headerColumn.get(i), i);
+	private void writeHeaderRowIfRequired() {
+		if (!isHeaderInitialized) {
+			List<String> headerColumn = mapping.headerColumns();
+			if (!headerColumn.isEmpty()) {
+				initializeExcelRow();
+				for (int i = 0; i < headerColumn.size(); i++) {
+					setCellValue(headerColumn.get(i), i);
+				}
 			}
+
+			isHeaderInitialized = true;
 		}
 	}
 

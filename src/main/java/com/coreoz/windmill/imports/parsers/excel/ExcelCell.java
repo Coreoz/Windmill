@@ -1,12 +1,11 @@
 package com.coreoz.windmill.imports.parsers.excel;
 
-import java.util.function.Function;
-
-import org.apache.poi.ss.usermodel.CellType;
-
 import com.coreoz.windmill.imports.Cell;
 import com.coreoz.windmill.imports.NumberValue;
 import com.coreoz.windmill.imports.NumberValueWithDefault;
+import org.apache.poi.ss.usermodel.CellType;
+
+import java.util.function.Function;
 
 class ExcelCell implements Cell {
 
@@ -33,6 +32,7 @@ class ExcelCell implements Cell {
 		}
 		if (excelCell.getCellTypeEnum() == CellType.NUMERIC
 			|| excelCell.getCellTypeEnum() == CellType.FORMULA) {
+			// todo: side effect can influence on tryGetValue method
 			excelCell.setCellType(CellType.STRING);
 		}
 		return emptyToNullTrimmed(excelCell.getRichStringCellValue().getString(), trimValue);

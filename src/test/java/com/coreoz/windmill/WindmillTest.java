@@ -1,10 +1,13 @@
 package com.coreoz.windmill;
 
+import com.coreoz.windmill.exports.exporters.excel.ExcelCellStyler;
+import com.coreoz.windmill.exports.exporters.excel.ExcelExporter;
 import com.coreoz.windmill.exports.exporters.excel.ExportExcelConfig;
 import com.coreoz.windmill.exports.mapping.ExportHeaderMapping;
 import com.coreoz.windmill.files.FileSource;
 import com.coreoz.windmill.files.ParserGuesserTest;
 import com.coreoz.windmill.imports.Cell;
+import com.coreoz.windmill.imports.FileParser;
 import com.coreoz.windmill.imports.Parsers;
 import com.coreoz.windmill.imports.Row;
 import org.junit.Test;
@@ -79,11 +82,34 @@ public class WindmillTest {
 		byte[] xlsxExport = Exporter.<Import>builder()
 				.withoutHeaders()
 				.columns(exportNoHeaderMapping())
-			 	.asExcel()
+			 	.asExcel(ExportExcelConfig.newXlsxFile()
+						.build("Sheet1"))
 				.writeRows(data())
 				.toByteArray();
 
 		tryParseNoHeaderFile(FileSource.of(xlsxExport));
+		tryParseNoHeaderFile(FileSource.of(xlsxExport), Parsers.xlsx());
+		tryParseNoHeaderFile(FileSource.of(xlsxExport), Parsers.xlsx(0));
+		tryParseNoHeaderFile(FileSource.of(xlsxExport), Parsers.xlsx("Sheet1"));
+	}
+
+	@Test
+	public void should_export_as_xls_no_header() {
+        ExcelExporter<Import> exporter = Exporter.<Import>builder()
+                .withoutHeaders()
+                .columns(exportNoHeaderMapping())
+                .asExcel(ExportExcelConfig.newXlsFile()
+                        .build("Sheet1")
+                        .withCellStyler(ExcelCellStyler.bordersStyle()))
+                .writeRows(data());
+
+        assertThat(exporter.workbook()).isNotNull();
+        byte[] xlsExport = exporter.toByteArray();
+
+		tryParseNoHeaderFile(FileSource.of(xlsExport));
+		tryParseNoHeaderFile(FileSource.of(xlsExport), Parsers.xls());
+		tryParseNoHeaderFile(FileSource.of(xlsExport), Parsers.xls(0));
+		tryParseNoHeaderFile(FileSource.of(xlsExport), Parsers.xls("Sheet1"));
 	}
 
 	@Test
@@ -96,6 +122,7 @@ public class WindmillTest {
 				.toByteArray();
 
 		tryParseNoHeaderFile(FileSource.of(csvExport));
+		tryParseNoHeaderFile(FileSource.of(csvExport), Parsers.csv());
 	}
 
 	@Test
@@ -247,6 +274,15 @@ public class WindmillTest {
 		try (Stream<Row> rowStream = Windmill.parse(fileSource)) {
 			List<Import> result = rowStream.map(this::parsingFunction)
 			.collect(Collectors.toList());
+
+			assertThat(result).containsExactlyElementsOf(data());
+		}
+	}
+
+	private void tryParseNoHeaderFile(FileSource fileSource, FileParser parser) {
+		try (Stream<Row> rowStream = Windmill.parse(fileSource, parser)) {
+			List<Import> result = rowStream.map(this::parsingFunction)
+					.collect(Collectors.toList());
 
 			assertThat(result).containsExactlyElementsOf(data());
 		}
