@@ -33,7 +33,7 @@ class ExcelCell implements Cell {
 		}
 		if (excelCell.getCellTypeEnum() == CellType.NUMERIC
 			|| excelCell.getCellTypeEnum() == CellType.FORMULA
-		    || excelCell.getCellTypeEnum() == CellType.BOOLEAN) {
+			|| excelCell.getCellTypeEnum() == CellType.BOOLEAN) {
 			excelCell.setCellType(CellType.STRING);
 		}
 		return emptyToNullTrimmed(excelCell.getRichStringCellValue().getString(), trimValue);
