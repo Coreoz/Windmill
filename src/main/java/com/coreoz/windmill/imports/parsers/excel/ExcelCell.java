@@ -32,8 +32,8 @@ class ExcelCell implements Cell {
 			return null;
 		}
 		if (excelCell.getCellTypeEnum() == CellType.NUMERIC
-			|| excelCell.getCellTypeEnum() == CellType.FORMULA) {
-//		    || excelCell.getCellTypeEnum() == CellType.BOOLEAN) {
+			|| excelCell.getCellTypeEnum() == CellType.FORMULA
+		    || excelCell.getCellTypeEnum() == CellType.BOOLEAN) {
 			excelCell.setCellType(CellType.STRING);
 		}
 		return emptyToNullTrimmed(excelCell.getRichStringCellValue().getString(), trimValue);
