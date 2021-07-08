@@ -91,8 +91,9 @@ public class WindmillTest {
 				row.cell(6).asString(),
 				row.cell(7).asString(),
 				row.cell(8).asString(),
-				row.cell(9).asInteger().value(),
-				row.cell(10).asDouble().value()
+				row.cell(9).asString(),
+				row.cell(10).asInteger().value(),
+				row.cell(11).asDouble().value()
 			))
 			.collect(Collectors.toList());
 
@@ -146,7 +147,7 @@ public class WindmillTest {
 			.collect(Collectors.toList());
 
 		assertThat(result).containsExactlyElementsOf(Arrays.asList(
-			Import.of("String val", null, "3 String", 54564, 0.25)
+			Import.of("String val", null, "3 String", "FALSE", 54564, 0.25)
 		));
 	}
 
@@ -154,8 +155,8 @@ public class WindmillTest {
 
 	private List<Import> data() {
 		return Arrays.asList(
-			Import.of("String value 1", "2", "String 3", null, 5.45),
-			Import.of("String val", null, "3 String ", 54564, 0.25)
+			Import.of("String value 1", "2", "String 3", "TRUE", null, 5.45),
+			Import.of("String val", null, "3 String ", "FALSE",54564, 0.25)
 		);
 	}
 
@@ -168,6 +169,7 @@ public class WindmillTest {
 			.add("a", Import::getA)
 			.add("b", Import::getB)
 			.add("c", Import::getC)
+			.add("d", Import::getD)
 			.add("Integer number", Import::getIntegerNumber)
 			.add("Double number", Import::getDoubleNumber);
 	}
@@ -177,6 +179,7 @@ public class WindmillTest {
 			Import::getA,
 			Import::getB,
 			Import::getC,
+			Import::getD,
 			Import::getIntegerNumber,
 			Import::getDoubleNumber
 		);
@@ -206,6 +209,7 @@ public class WindmillTest {
 			row.cell("a").asString(),
 			row.cell("b").asString(),
 			row.cell("c").asString(),
+			row.cell("d").asString(),
 			row.cell("Integer number").asInteger().value(),
 			row.cell("Double number").asDouble().value()
 		);
@@ -225,8 +229,9 @@ public class WindmillTest {
 			row.cell(0).asString(),
 			row.cell(1).asString(),
 			row.cell(2).asString(),
-			row.cell(3).asInteger().value(),
-			row.cell(4).asDouble().value()
+			row.cell(3).asString(),
+			row.cell(4).asInteger().value(),
+			row.cell(5).asDouble().value()
 		);
 	}
 
@@ -265,6 +270,7 @@ public class WindmillTest {
 		private String a;
 		private String b;
 		private String c;
+		private String d;
 		private Integer integerNumber;
 		private Double doubleNumber;
 	}
