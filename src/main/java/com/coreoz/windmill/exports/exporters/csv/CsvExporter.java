@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import com.coreoz.windmill.exports.config.ExportMapping;
@@ -41,6 +42,9 @@ public class CsvExporter<T> {
 			exportConfig.getEscapeChar(),
 			exportConfig.getLineEnd()
 		);
+		if (exportConfig.isBomEnabled()) {
+			writeBom(outputStream);
+		}
 		writeRows();
 		return outputStream;
 	}
@@ -55,6 +59,15 @@ public class CsvExporter<T> {
 	}
 
 	// internals
+
+	@SneakyThrows
+	private void writeBom(OutputStream outputStream) {
+		String bom = exportConfig.getBom();
+		Charset encodingCharset = exportConfig.getCharset();
+		if (bom != null && encodingCharset != null) {
+			outputStream.write(bom.getBytes(encodingCharset));
+		}
+	}
 
 	private void writeRows() {
 		writeHeaderRow();

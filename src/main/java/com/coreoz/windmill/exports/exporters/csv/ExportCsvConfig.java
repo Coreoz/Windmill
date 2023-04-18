@@ -14,7 +14,7 @@ import lombok.Value;
 public class ExportCsvConfig {
 
 	/** the file charset */
-	@Builder.Default private final Charset charset = StandardCharsets.ISO_8859_1;
+	@Builder.Default private final Charset charset = StandardCharsets.UTF_8;
 	/** The delimiter to use for separating entries */
 	@Builder.Default private final char separator = ICSVParser.DEFAULT_SEPARATOR;
 	/** The character to use for quoted elements */
@@ -25,6 +25,8 @@ public class ExportCsvConfig {
 	@Builder.Default private final String lineEnd = CSVWriter.DEFAULT_LINE_END;
 	/** The boolean to use for applying or not optional wrapping quotes  */
 	@Builder.Default private final boolean applyQuotesToAll = true;
-
-
+	/** The UTF8 bom used to enable auto encoding detection for excel */
+	@Builder.Default private final String bom = Character.toString((char) 0xFEFF);
+	/** The boom should be used only for excel usage */
+	@Builder.Default private final boolean isBomEnabled = false;
 }
