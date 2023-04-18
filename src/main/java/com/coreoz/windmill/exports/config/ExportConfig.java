@@ -81,4 +81,25 @@ public class ExportConfig<T> {
 		return new ExportRowsConfig<>(rows, mapping);
 	}
 
+    /**
+     * Prepare an export with a custom implementation for the mapping
+     * A usage example:
+	 * <pre>
+	 * <code>
+     * public class CustomMapping implements ExportMapping<Bean> { }
+     * [...]
+     * List<Bean> list = Arrays.asList(bean1, bean2, bean3);
+	 * Windmill
+	 *   .export(list)
+	 *   .withMapping(new CustomMapping());
+	 * </code>
+	 * </pre>
+	 * 
+     * @param mapping
+     * @return
+     */
+    public ExportRowsConfig<T> withMapping(ExportMapping<T> mapping) {
+        return new ExportRowsConfig<>(rows, mapping);
+    }
+
 }
