@@ -28,7 +28,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build & test with Maven and coverage
-      run: mvn clean test jacoco:report coveralls:report --file pom.xml
+      run: mvn clean test jacoco:report --file pom.xml
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
@@ -38,7 +38,7 @@ jobs:
       id: jacoco
       uses: madrapps/jacoco-report@v1.3
       with:
-        paths: ${{ github.workspace }}/build/reports/jacoco/testCoverage/testCoverage.xml
+        paths: ${{ github.workspace }}/target/site/jacoco/jacoco.xml
         token: ${{ secrets.GITHUB_TOKEN }}
         min-coverage-overall: 40
         min-coverage-changed-files: 60
