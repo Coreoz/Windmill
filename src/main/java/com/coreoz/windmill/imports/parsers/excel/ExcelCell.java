@@ -31,9 +31,14 @@ class ExcelCell implements Cell {
 			// POI sometimes returns null when a cell is empty...
 			return null;
 		}
-		if (excelCell.getCellTypeEnum() == CellType.NUMERIC
-			|| excelCell.getCellTypeEnum() == CellType.FORMULA
-			|| excelCell.getCellTypeEnum() == CellType.BOOLEAN) {
+
+		// maybe in the future this needs to be replaced by:
+		// DataFormatter formatter = new DataFormatter(); // to cache in thread locale?
+		// FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
+		// String value = formatter.formatCellValue(cell, evaluator);
+		if (excelCell.getCellType() == CellType.NUMERIC
+			|| excelCell.getCellType() == CellType.FORMULA
+			|| excelCell.getCellType() == CellType.BOOLEAN) {
 			excelCell.setCellType(CellType.STRING);
 		}
 		return emptyToNullTrimmed(excelCell.getRichStringCellValue().getString(), trimValue);
@@ -72,10 +77,8 @@ class ExcelCell implements Cell {
 
 	private<T> T tryGetValue(Function<Double, T> cast) {
 		if (excelCell != null) {
-			if (excelCell.getCellTypeEnum() == CellType.FORMULA) {
-				excelCell.setCellType(CellType.NUMERIC);
-			}
-			if(excelCell.getCellTypeEnum() == CellType.NUMERIC) {
+			if(excelCell.getCellType() == CellType.NUMERIC
+				|| excelCell.getCellType() == CellType.FORMULA) {
 				return cast.apply(excelCell.getNumericCellValue());
 			}
 		}
