@@ -40,5 +40,8 @@ jobs:
       with:
         paths: ${{ github.workspace }}/target/site/jacoco/jacoco.xml
         token: ${{ secrets.GITHUB_TOKEN }}
-        min-coverage-overall: 40
-        min-coverage-changed-files: 60
+        min-coverage-overall: 85
+        min-coverage-changed-files: 90
+
+    - name: Coveralls
+      uses: coverallsapp/github-action@v2
