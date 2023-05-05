@@ -18,7 +18,6 @@ public class CsvExporter<T> {
 	private final ExportMapping<T> mapping;
 	private final ExportCsvConfig exportConfig;
 	private CSVWriter csvWriter;
-    /** The UTF8 bom used to enable auto encoding detection for excel */
 
 	public CsvExporter(Iterable<T> rows, ExportMapping<T> mapping, ExportCsvConfig exportConfig) {
 		this.rows = rows;
@@ -63,10 +62,10 @@ public class CsvExporter<T> {
 
 	@SneakyThrows
 	private void writeBom(OutputStream outputStream) {
-		String bom = exportConfig.getExportCharset().getBom();
+		byte[] bom = exportConfig.getExportCharset().getBom();
 		Charset encodingCharset = exportConfig.getExportCharset().getCharset();
 		if (bom != null && encodingCharset != null) {
-			outputStream.write(bom.getBytes(encodingCharset));
+			outputStream.write(bom);
 		}
 	}
 

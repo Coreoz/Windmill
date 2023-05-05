@@ -2,8 +2,6 @@ package com.coreoz.windmill;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -40,7 +38,6 @@ public class WindmillTest {
 
 	@Test
 	public void should_export_as_csv_with_header() {
-        Charset utf8 = StandardCharsets.UTF_8;
 		byte[] csvExport = exportBase()
 			.withHeaderMapping(exportHeaderMapping())
 			.asCsv()

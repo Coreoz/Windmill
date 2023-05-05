@@ -13,9 +13,9 @@ import lombok.Value;
 public class ExportCsvConfig {
 
 	/** the file charset
-     * will use bom if possible
-     * override with new ExportCharset(encoding, null) if you want to avoid bom
-    */
+	 * will use bom if possible
+	 * override with new ExportCharset(encoding, null) if you want to avoid bom
+	*/
 	@Builder.Default private final ExportCharset exportCharset = new ExportCharset(StandardCharsets.UTF_8);
 	/** The delimiter to use for separating entries */
 	@Builder.Default private final char separator = ICSVParser.DEFAULT_SEPARATOR;

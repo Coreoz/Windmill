@@ -7,19 +7,19 @@ import java.util.Map;
 
 public class ExportCharset {
     private Charset charset;
-    private String bom;
+    private byte[] bom;
 
-    private static final Map<Charset, String> bomsMap;
+    private static final Map<Charset, byte[]> bomsMap;
     static {
         bomsMap = new HashMap<>();
         // Add here existing bom to automatically handle default bom for specific encoding
-        bomsMap.put(StandardCharsets.UTF_8, Character.toString((char) 0xEFBBBF));
-        bomsMap.put(StandardCharsets.UTF_16BE, Character.toString((char) 0xFEFF));
-        bomsMap.put(StandardCharsets.UTF_16LE, Character.toString((char) 0xFFFE));
+        bomsMap.put(StandardCharsets.UTF_8, new byte[] { (byte)0xEF, (byte)0xBB, (byte)0xBF });
+        bomsMap.put(StandardCharsets.UTF_16BE, new byte[] { (byte)0xFE, (byte)0xFF });
+        bomsMap.put(StandardCharsets.UTF_16LE, new byte[] { (byte)0xFF, (byte)0xFE });
         bomsMap.put(StandardCharsets.ISO_8859_1, null);
     }
 
-    public ExportCharset(Charset charset, String bom) {
+    public ExportCharset(Charset charset, byte[] bom) {
         this.charset = charset;
         this.bom = bom;
     }
@@ -33,7 +33,7 @@ public class ExportCharset {
         return this.charset;
     }
 
-    public String getBom() {
+    public byte[] getBom() {
         return this.bom;
     }
 }
