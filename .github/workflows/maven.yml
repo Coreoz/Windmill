@@ -28,7 +28,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build & test with Maven and coverage
-      run: mvn clean test jacoco:report --file pom.xml
+      run: mvn clean test jacoco:report coveralls:report --repoToken ${{ COVERALLS_TOKEN }}
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
@@ -42,6 +42,3 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         min-coverage-overall: 85
         min-coverage-changed-files: 90
-
-    - name: Coveralls
-      uses: coverallsapp/github-action@v2
