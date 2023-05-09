@@ -42,7 +42,7 @@ public class CsvExporter<T> {
 			exportConfig.getEscapeChar(),
 			exportConfig.getLineEnd()
 		);
-		if (exportConfig.getExportCharset().getBom() != null) {
+		if (exportConfig.getExportCharset().getBomBytes() != null) {
 			writeBom(outputStream);
 		}
 		writeRows();
@@ -62,7 +62,7 @@ public class CsvExporter<T> {
 
 	@SneakyThrows
 	private void writeBom(OutputStream outputStream) {
-		byte[] bom = exportConfig.getExportCharset().getBom();
+		byte[] bom = exportConfig.getExportCharset().getBomBytes();
 		Charset encodingCharset = exportConfig.getExportCharset().getCharset();
 		if (bom != null && encodingCharset != null) {
 			outputStream.write(bom);

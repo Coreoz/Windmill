@@ -4,10 +4,11 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.io.ByteOrderMark;
 
 public class ExportCharset {
     private Charset charset;
-    private byte[] bom;
+    private byte[] bomBytes;
 
     private static final Map<Charset, byte[]> bomsMap;
     static {
@@ -21,19 +22,40 @@ public class ExportCharset {
 
     public ExportCharset(Charset charset, byte[] bom) {
         this.charset = charset;
-        this.bom = bom;
+        this.bomBytes = bom;
     }
 
     public ExportCharset(Charset charset) {
         this.charset = charset;
-        this.bom = bomsMap.get(charset);
+        this.bomBytes = bomsMap.get(charset);
     }
 
     public Charset getCharset() {
         return this.charset;
     }
 
-    public byte[] getBom() {
-        return this.bom;
+    public byte[] getBomBytes() {
+        return this.bomBytes;
+    }
+
+    /**
+     * @return the ByteOrderMarker from apache, used for parsing your csv file
+     * null if there is no BOM
+     */
+    public ByteOrderMark getBoms() {
+        if (this.charset.equals(StandardCharsets.UTF_8)) {
+            return ByteOrderMark.UTF_8;
+        }
+        if (this.charset.equals(StandardCharsets.UTF_16LE)) {
+            return ByteOrderMark.UTF_16LE;
+        }
+        if (this.charset.equals(StandardCharsets.UTF_16BE)) {
+            return ByteOrderMark.UTF_16BE;
+        }
+        /**
+         * Add here the mapping between your charset and ByteOrderMarker from apache
+         * This is currently only used from the csv parser
+         */
+        return null;
     }
 }
