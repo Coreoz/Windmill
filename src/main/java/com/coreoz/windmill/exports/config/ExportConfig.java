@@ -96,7 +96,6 @@ public class ExportConfig<T> {
 	 * </pre>
 	 * 
      * @param mapping
-     * @return
      */
     public ExportRowsConfig<T> withMapping(ExportMapping<T> mapping) {
         return new ExportRowsConfig<>(rows, mapping);
