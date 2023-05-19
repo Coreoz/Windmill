@@ -36,13 +36,13 @@ public class CsvExporter<T> {
 	@SneakyThrows
 	public OutputStream writeTo(OutputStream outputStream) {
 		csvWriter = new CSVWriter(
-			new OutputStreamWriter(outputStream, exportConfig.getExportCharset().getCharset()),
+			new OutputStreamWriter(outputStream, exportConfig.getCharset().getCharset()),
 			exportConfig.getSeparator(),
 			exportConfig.getQuoteChar(),
 			exportConfig.getEscapeChar(),
 			exportConfig.getLineEnd()
 		);
-		if (exportConfig.getExportCharset().getBomBytes() != null) {
+		if (exportConfig.getCharset().getBomBytes() != null) {
 			writeBom(outputStream);
 		}
 		writeRows();
@@ -62,8 +62,8 @@ public class CsvExporter<T> {
 
 	@SneakyThrows
 	private void writeBom(OutputStream outputStream) {
-		byte[] bom = exportConfig.getExportCharset().getBomBytes();
-		Charset encodingCharset = exportConfig.getExportCharset().getCharset();
+		byte[] bom = exportConfig.getCharset().getBomBytes();
+		Charset encodingCharset = exportConfig.getCharset().getCharset();
 		if (bom != null && encodingCharset != null) {
 			outputStream.write(bom);
 		}

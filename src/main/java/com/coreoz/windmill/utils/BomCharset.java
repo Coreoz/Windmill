@@ -85,6 +85,7 @@ public final class BomCharset {
                 return charset;
             }
         }
+
         return fallbackCharset;
     }
 

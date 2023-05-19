@@ -1,18 +1,18 @@
 package com.coreoz.windmill.imports.parsers.csv;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.stream.Stream;
-import java.nio.charset.Charset;
 
 import com.coreoz.windmill.files.FileSource;
 import com.coreoz.windmill.imports.FileParser;
 import com.coreoz.windmill.imports.Row;
+import com.coreoz.windmill.utils.BomCharset;
 import com.coreoz.windmill.utils.IteratorStreams;
+import com.coreoz.windmill.utils.PeekingInputStream;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReaderBuilder;
-
-import org.apache.commons.io.input.BOMInputStream;
 
 public class CsvParser implements FileParser {
 
@@ -26,12 +26,28 @@ public class CsvParser implements FileParser {
 		this.csvParserConfiguration = csvParserConfiguration;
 	}
 
+    private BomCharset findFileStreamBom(PeekingInputStream peekingStream, BomCharset fallbackCharset) {
+        try {
+            byte[] firstFileBytes = peekingStream.peekMaxBomLength();
+            return BomCharset.detectCharset(firstFileBytes, fallbackCharset);
+        } catch (IOException e) {
+            return fallbackCharset;
+        }
+    }
+
 	@Override
 	public Stream<Row> parse(FileSource source) {
-		InputStreamReader csvStreamReader = new InputStreamReader(
-            new BOMInputStream(source.toInputStream(), csvParserConfiguration.getExportCharset().getBoms()),
-            csvParserConfiguration.getExportCharset().getCharset()
-        );
+        PeekingInputStream peekingStream = new PeekingInputStream(source.toInputStream());
+
+        BomCharset charset = findFileStreamBom(peekingStream, csvParserConfiguration.getFallbackCharset());
+        // Try to remove the bom
+        try {
+            peekingStream.peekedStream().skip(charset.bomLength());
+        } catch (IOException e) {
+            // nothing to do
+        }
+
+		InputStreamReader csvStreamReader = new InputStreamReader(peekingStream.peekedStream(), charset.getCharset());
 		Iterator<String[]> csvRowIterator = new CSVReaderBuilder(csvStreamReader)
 			.withCSVParser(
 				new CSVParserBuilder()

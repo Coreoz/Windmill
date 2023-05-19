@@ -1,8 +1,6 @@
 package com.coreoz.windmill.imports.parsers.csv;
 
-import java.nio.charset.StandardCharsets;
-
-import com.coreoz.windmill.exports.exporters.csv.ExportCharset;
+import com.coreoz.windmill.utils.BomCharset;
 import com.opencsv.ICSVParser;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
 
@@ -13,10 +11,8 @@ import lombok.Value;
 @Builder
 public class CsvParserConfig {
 
-	/** the file charset
-     * will parse bom if possible
-    */
-	@Builder.Default private final ExportCharset exportCharset = new ExportCharset(StandardCharsets.UTF_8);
+	/** The default charset to use if no bom is detected */
+	@Builder.Default private final BomCharset fallbackCharset = BomCharset.ISO_8859_1_NO_BOM;
 	/** if the reader built will keep or discard carriage returns */
 	@Builder.Default private final boolean keepCr = false;
 	/** the delimiter to use for separating entries */
