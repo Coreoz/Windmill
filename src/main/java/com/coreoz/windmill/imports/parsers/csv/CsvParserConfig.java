@@ -11,7 +11,11 @@ import lombok.Value;
 @Builder
 public class CsvParserConfig {
 
-	/** The default charset to use if no bom is detected */
+	/**
+     * The default charset to use if no bom is detected
+     * It should always be a charset without BOM, for instance BomCharset.UTF_8_NO_BOM,
+     * otherwise the length of the BOM will be skipped
+    */
 	@Builder.Default private final BomCharset fallbackCharset = BomCharset.ISO_8859_1;
 	/** if the reader built will keep or discard carriage returns */
 	@Builder.Default private final boolean keepCr = false;
