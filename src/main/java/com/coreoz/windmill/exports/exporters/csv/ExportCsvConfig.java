@@ -12,10 +12,10 @@ import lombok.Value;
 public class ExportCsvConfig {
 
 	/** the file charset
-	 * will use bom if possible
-	 * override with new ExportCharset(encoding, null) if you want to avoid bom
+	 * Will use bom if possible
+	 * or use a BomCharset version without a BOM, for instance BomCharset.UTF_8_NO_BOM
 	*/
-	@Builder.Default private final ExportCharset charset = new ExportCharset(BomCharset.UTF_8);
+	@Builder.Default private final BomCharset charset = BomCharset.UTF_8;
 	/** The delimiter to use for separating entries */
 	@Builder.Default private final char separator = ICSVParser.DEFAULT_SEPARATOR;
 	/** The character to use for quoted elements */

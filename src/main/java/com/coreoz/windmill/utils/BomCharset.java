@@ -1,5 +1,7 @@
 package com.coreoz.windmill.utils;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
@@ -37,8 +39,9 @@ public final class BomCharset {
         null
     );
 
-    public static final BomCharset ISO_8859_1_NO_BOM = new BomCharset(
+    public static final BomCharset ISO_8859_1 = new BomCharset(
         StandardCharsets.ISO_8859_1,
+        // Non UTF encoding have no BOM
         null
     );
 
@@ -51,7 +54,8 @@ public final class BomCharset {
     /**
      * @return the maximal possible length for a Bom
      */
-    public static int maxBomLength() {
+    private static final int MAX_BOM_LENGTH;
+    static {
         int maxLength = 0;
         for (BomCharset charset : availableBoms) {
             int bomLength = charset.bomLength();
@@ -59,7 +63,11 @@ public final class BomCharset {
                 maxLength = bomLength;
             }
         }
-        return maxLength;
+        MAX_BOM_LENGTH = maxLength;
+    }
+
+    public static int maxBomLength() {
+        return MAX_BOM_LENGTH;
     }
 
     public int bomLength() {
@@ -89,6 +97,10 @@ public final class BomCharset {
         return fallbackCharset;
     }
 
+    public void writeBomBytes(OutputStream outputStream) throws IOException {
+        outputStream.write(this.bomBytes);
+    }
+
     public BomCharset(Charset charset, byte[] bomBytes) {
         this.charset = charset;
         this.bomBytes = bomBytes;
@@ -98,15 +110,7 @@ public final class BomCharset {
         return this.charset;
     }
 
-    public void setCharset(Charset charset) {
-        this.charset = charset;
-    }
-
-    public byte[] getBomBytes() {
+    private byte[] getBomBytes() {
         return this.bomBytes;
-    }
-
-    public void setBomBytes(byte[] bomBytes) {
-        this.bomBytes = bomBytes;
     }
 }

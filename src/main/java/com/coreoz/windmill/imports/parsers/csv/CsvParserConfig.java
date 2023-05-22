@@ -12,7 +12,7 @@ import lombok.Value;
 public class CsvParserConfig {
 
 	/** The default charset to use if no bom is detected */
-	@Builder.Default private final BomCharset fallbackCharset = BomCharset.ISO_8859_1_NO_BOM;
+	@Builder.Default private final BomCharset fallbackCharset = BomCharset.ISO_8859_1;
 	/** if the reader built will keep or discard carriage returns */
 	@Builder.Default private final boolean keepCr = false;
 	/** the delimiter to use for separating entries */

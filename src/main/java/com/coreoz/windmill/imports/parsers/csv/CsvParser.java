@@ -14,6 +14,8 @@ import com.coreoz.windmill.utils.PeekingInputStream;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReaderBuilder;
 
+import lombok.SneakyThrows;
+
 public class CsvParser implements FileParser {
 
 	private final CsvParserConfig csvParserConfiguration;
@@ -26,26 +28,28 @@ public class CsvParser implements FileParser {
 		this.csvParserConfiguration = csvParserConfiguration;
 	}
 
-    private BomCharset findFileStreamBom(PeekingInputStream peekingStream, BomCharset fallbackCharset) {
-        try {
-            byte[] firstFileBytes = peekingStream.peekMaxBomLength();
-            return BomCharset.detectCharset(firstFileBytes, fallbackCharset);
-        } catch (IOException e) {
-            return fallbackCharset;
-        }
+    /**
+     * Remove the bom from the file if it exists
+     * @param peekingStream
+     * @param fallbackCharset
+     * @return The charset found
+     */
+    @SneakyThrows
+    private BomCharset cleanFilestreamBom(PeekingInputStream peekingStream, BomCharset fallbackCharset) {
+        byte[] firstFileBytes = peekingStream.peekMaxBomLength();
+        BomCharset bomCharset = BomCharset.detectCharset(firstFileBytes, fallbackCharset);
+        // Try to remove the bom
+        peekingStream.peekedStream().skip(bomCharset.bomLength());
+
+        return bomCharset;
     }
 
+    @SneakyThrows
 	@Override
 	public Stream<Row> parse(FileSource source) {
         PeekingInputStream peekingStream = new PeekingInputStream(source.toInputStream());
 
-        BomCharset charset = findFileStreamBom(peekingStream, csvParserConfiguration.getFallbackCharset());
-        // Try to remove the bom
-        try {
-            peekingStream.peekedStream().skip(charset.bomLength());
-        } catch (IOException e) {
-            // nothing to do
-        }
+        BomCharset charset = cleanFilestreamBom(peekingStream, csvParserConfiguration.getFallbackCharset());
 
 		InputStreamReader csvStreamReader = new InputStreamReader(peekingStream.peekedStream(), charset.getCharset());
 		Iterator<String[]> csvRowIterator = new CSVReaderBuilder(csvStreamReader)

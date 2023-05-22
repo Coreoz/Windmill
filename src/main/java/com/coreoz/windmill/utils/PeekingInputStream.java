@@ -13,11 +13,9 @@ public class PeekingInputStream {
     private static final int MAX_BOM_LENGTH = BomCharset.maxBomLength();
 
     private final PushbackInputStream fileStream;
-    private final InputStream originalStream;
 
     public PeekingInputStream(InputStream fileStream) {
         this.fileStream = new PushbackInputStream(fileStream, MAX_BOM_LENGTH);
-        this.originalStream = fileStream;
     }
 
     public byte[] peekMaxBomLength() throws IOException {
