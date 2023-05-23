@@ -1,7 +1,7 @@
 Windmill
 ========
 
-[![Build Status](https://travis-ci.org/Coreoz/Windmill.svg?branch=master)](https://travis-ci.org/Coreoz/Windmill)
+[![Build Status](https://github.com/Coreoz/Windmill/actions/workflows/maven.yml/badge.svg)](./actions)
 [![Coverage Status](https://coveralls.io/repos/github/Coreoz/Windmill/badge.svg?branch=master)](https://coveralls.io/github/Coreoz/Windmill?branch=master)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.coreoz/windmill/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.coreoz/windmill)
 
