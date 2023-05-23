@@ -1,6 +1,6 @@
 package com.coreoz.windmill.exports.exporters.csv;
 
-import com.coreoz.windmill.utils.BomCharset;
+import com.coreoz.windmill.charset.BomCharset;
 import com.opencsv.CSVWriter;
 import com.opencsv.ICSVParser;
 

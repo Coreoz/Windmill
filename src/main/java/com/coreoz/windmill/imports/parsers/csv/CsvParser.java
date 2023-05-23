@@ -5,12 +5,12 @@ import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.stream.Stream;
 
+import com.coreoz.windmill.charset.BomCharset;
+import com.coreoz.windmill.charset.PeekingInputStream;
 import com.coreoz.windmill.files.FileSource;
 import com.coreoz.windmill.imports.FileParser;
 import com.coreoz.windmill.imports.Row;
-import com.coreoz.windmill.utils.BomCharset;
 import com.coreoz.windmill.utils.IteratorStreams;
-import com.coreoz.windmill.utils.PeekingInputStream;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReaderBuilder;
 

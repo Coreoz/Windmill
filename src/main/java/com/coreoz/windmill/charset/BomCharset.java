@@ -1,4 +1,4 @@
-package com.coreoz.windmill.utils;
+package com.coreoz.windmill.charset;
 
 import java.io.IOException;
 import java.io.OutputStream;

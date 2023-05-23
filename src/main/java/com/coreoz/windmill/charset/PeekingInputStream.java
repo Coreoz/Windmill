@@ -1,4 +1,4 @@
-package com.coreoz.windmill.utils;
+package com.coreoz.windmill.charset;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,17 +9,15 @@ import java.io.PushbackInputStream;
  * See {@link BomCharset} for usage
  */
 public class PeekingInputStream {
-    // This number comes from the max possible length for available boms
-    private static final int MAX_BOM_LENGTH = BomCharset.maxBomLength();
-
     private final PushbackInputStream fileStream;
 
     public PeekingInputStream(InputStream fileStream) {
-        this.fileStream = new PushbackInputStream(fileStream, MAX_BOM_LENGTH);
+        this.fileStream = new PushbackInputStream(fileStream, BomCharset.maxBomLength());
     }
 
     public byte[] peekMaxBomLength() throws IOException {
-        return peek(MAX_BOM_LENGTH);
+        // This number comes from the max possible length for available boms
+        return peek(BomCharset.maxBomLength());
     }
 
     private byte[] peek(int bytesToRead) throws IOException {

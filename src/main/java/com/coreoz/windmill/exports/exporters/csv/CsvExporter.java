@@ -6,8 +6,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
+import com.coreoz.windmill.charset.BomCharset;
 import com.coreoz.windmill.exports.config.ExportMapping;
-import com.coreoz.windmill.utils.BomCharset;
 import com.opencsv.CSVWriter;
 
 import lombok.SneakyThrows;
