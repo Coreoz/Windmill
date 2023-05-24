@@ -7,6 +7,9 @@ import java.util.stream.StreamSupport;
 
 import lombok.SneakyThrows;
 
+/**
+ * Used only internally inside Windmill.
+ */
 public class IteratorStreams {
 	/**
 	 * Returns a sequential {@link Stream} of the remaining contents of
