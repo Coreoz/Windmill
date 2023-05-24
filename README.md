@@ -105,7 +105,7 @@ Windmill
   .asCsv(ExportCsvConfig.builder()
     .separator(';')
     .escapeChar('"')
-    .charset(BomCharset.ISO_8859_1)
+    .charset(BomCharset.ISO_8859_1) // or BomCharset.UTF_8_NO_BOM for UTF-8
     .build());
   .toByteArray();
 ```
