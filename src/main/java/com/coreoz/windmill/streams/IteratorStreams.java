@@ -1,4 +1,4 @@
-package com.coreoz.windmill.utils;
+package com.coreoz.windmill.streams;
 
 import java.util.Iterator;
 import java.util.Spliterators;
@@ -8,7 +8,6 @@ import java.util.stream.StreamSupport;
 import lombok.SneakyThrows;
 
 public class IteratorStreams {
-
 	/**
 	 * Returns a sequential {@link Stream} of the remaining contents of
 	 * {@code iterator}. Do not use {@code iterator} directly after passing it to
@@ -22,5 +21,4 @@ public class IteratorStreams {
 	public static void close(AutoCloseable closeable) {
 		closeable.close();
 	}
-
 }
