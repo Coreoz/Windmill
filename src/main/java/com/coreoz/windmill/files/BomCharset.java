@@ -1,4 +1,4 @@
-package com.coreoz.windmill.charset;
+package com.coreoz.windmill.files;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -6,8 +6,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 public final class BomCharset {
-    private Charset charset;
-    private byte[] bomBytes;
+    private final Charset charset;
+    private final byte[] bomBytes;
 
     public static final BomCharset UTF_8 = new BomCharset(
         StandardCharsets.UTF_8,
@@ -51,9 +51,6 @@ public final class BomCharset {
         BomCharset.UTF_16LE,
     };
 
-    /**
-     * @return the maximal possible length for a Bom
-     */
     private static final int MAX_BOM_LENGTH;
     static {
         int maxLength = 0;
@@ -66,6 +63,9 @@ public final class BomCharset {
         MAX_BOM_LENGTH = maxLength;
     }
 
+    /**
+     * @return the maximal possible length for a Bom
+     */
     public static int maxBomLength() {
         return MAX_BOM_LENGTH;
     }

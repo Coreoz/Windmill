@@ -1,6 +1,6 @@
 package com.coreoz.windmill.imports.parsers.csv;
 
-import com.coreoz.windmill.charset.BomCharset;
+import com.coreoz.windmill.files.BomCharset;
 import com.opencsv.ICSVParser;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
 

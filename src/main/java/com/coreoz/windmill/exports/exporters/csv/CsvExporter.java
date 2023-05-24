@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
-import com.coreoz.windmill.charset.BomCharset;
+import com.coreoz.windmill.files.BomCharset;
 import com.coreoz.windmill.exports.config.ExportMapping;
 import com.opencsv.CSVWriter;
 
