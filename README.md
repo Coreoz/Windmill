@@ -15,6 +15,10 @@ and [OpenCSV](http://opencsv.sourceforge.net/) to manipulate Excel and CSV files
 
 At least Java 11 is required from version 2.0.0, whereas in versions 1.x.x, at least Java 8 is required.
 
+Upgrade from 1.x.x to 2.x.x
+---------------------------
+See upgrade instructions in the [release details](https://github.com/Coreoz/Windmill/releases/tag/2.0.0).
+
 Getting started
 ---------------
 Include Windmill in your project:
