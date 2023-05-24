@@ -10,7 +10,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import com.coreoz.windmill.files.FileSource;
 import com.coreoz.windmill.imports.FileParser;
 import com.coreoz.windmill.imports.Row;
-import com.coreoz.windmill.utils.IteratorStreams;
+import com.coreoz.windmill.streams.IteratorStreams;
 
 import lombok.SneakyThrows;
 

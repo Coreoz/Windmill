@@ -4,7 +4,7 @@ import com.coreoz.windmill.files.BomCharset;
 import com.coreoz.windmill.files.FileSource;
 import com.coreoz.windmill.imports.FileParser;
 import com.coreoz.windmill.imports.Row;
-import com.coreoz.windmill.utils.IteratorStreams;
+import com.coreoz.windmill.streams.IteratorStreams;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReaderBuilder;
 import lombok.SneakyThrows;
