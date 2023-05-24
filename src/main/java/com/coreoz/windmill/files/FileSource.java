@@ -21,8 +21,7 @@ public class FileSource {
 	@SneakyThrows
 	public byte[] peek(int nbBytesToRead) {
 		inputStream.mark(nbBytesToRead);
-		byte[] peeked = new byte[nbBytesToRead];
-		inputStream.read(peeked);
+		byte[] peeked = inputStream.readNBytes(nbBytesToRead);
 		inputStream.reset();
 		return peeked;
 	}
