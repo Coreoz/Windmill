@@ -54,10 +54,19 @@ Stream<Row> rowStream = Parsers
   .parse(FileSource.of(new FileInputStream("myFile.xlsx")));
 ```
 
-With CSV files, it is possible to specify multiple parameters like the charset or the escape character:
+With CSV files, it is possible to specify multiple parameters like the escape character:
 ```java
 Stream<Row> rowStream = Parsers
-  .csv(CsvParserConfig.builder().charset(StandardCharsets.UTF_8).separator(';').build())
+  .csv(CsvParserConfig.builder().separator(';').build())
+  .parse(FileSource.of(new FileInputStream("myFile.csv")));
+```
+
+The CSV parser will try to detect the encoding charset, but you can specify the fallback charset if none has been found.
+The fallback charset should always be a charset without BOM, for instance BomCharset.UTF_8_NO_BOM,
+otherwise the content of the CSV file will be stripped of the length of the BOM.
+```java
+Stream<Row> rowStream = Parsers
+  .csv(CsvParserConfig.builder().fallbackCharset(BomCharset.ISO_8859_1).build())
   .parse(FileSource.of(new FileInputStream("myFile.csv")));
 ```
 
@@ -83,6 +92,21 @@ Windmill
   .export(Arrays.asList(bean1, bean2, bean3))
   .withNoHeaderMapping(Bean::getName, bean -> bean.getUser().getLogin())
   .asCsv(ExportCsvConfig.builder().separator(';').escapeChar('"').build());
+  .toByteArray();
+```
+
+CSV Exporter will add by default an UTF-8 BOM in the file to allow reader such as Excel to detect the correct
+encoding.
+If you need to export the file without BOM, just specify an encoding charset without BOM :
+```java
+Windmill
+  .export(Arrays.asList(bean1, bean2, bean3))
+  .withNoHeaderMapping(Bean::getName, bean -> bean.getUser().getLogin())
+  .asCsv(ExportCsvConfig.builder()
+    .separator(';')
+    .escapeChar('"')
+    .charset(BomCharset.ISO_8859_1)
+    .build());
   .toByteArray();
 ```
 
