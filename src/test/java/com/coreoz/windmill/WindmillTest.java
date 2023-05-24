@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import com.coreoz.windmill.exports.config.ExportConfig;
 import com.coreoz.windmill.exports.config.ExportHeaderMapping;
+import com.coreoz.windmill.exports.config.ExportMapping;
 import com.coreoz.windmill.exports.exporters.excel.ExportExcelConfig;
 import com.coreoz.windmill.files.FileSource;
 import com.coreoz.windmill.files.ParserGuesserTest;
@@ -99,6 +100,46 @@ public class WindmillTest {
 
 			assertThat(result).containsExactlyElementsOf(data());
 		}
+	}
+
+	@Test
+	public void should_export_as_csv_with_custom() {
+		byte[] csvExport = exportBase()
+			.withMapping(new ExportMapping<WindmillTest.Import>() {
+				@Override
+				public List<String> headerColumns() {
+                    return Arrays.asList("a", "b", "c", "d", "Integer number", "Double number");
+				}
+
+				@Override
+				public int columnsCount() {
+                    return 6;
+				}
+
+				@Override
+				public Object cellValue(int columnIndex, Import row) {
+                    switch(columnIndex) {
+                        case 0:
+                            return row.getA();
+                        case 1:
+                            return row.getB();
+                        case 2:
+                            return row.getC();
+                        case 3:
+                            return row.getD();
+                        case 4:
+                            return row.getIntegerNumber();
+                        case 5:
+                            return row.getDoubleNumber();
+                        default:
+                            return "";
+                    }
+				}
+            })
+			.asCsv()
+			.toByteArray();
+
+        tryParseHeaderFile(FileSource.of(csvExport));
 	}
 
 	@Test
