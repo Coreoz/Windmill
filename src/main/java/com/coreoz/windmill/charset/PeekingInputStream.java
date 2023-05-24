@@ -21,8 +21,7 @@ public class PeekingInputStream {
     }
 
     private byte[] peek(int bytesToRead) throws IOException {
-        byte[] bytesPeeked = new byte[bytesToRead];
-        fileStream.read(bytesPeeked, 0, bytesToRead);
+        byte[] bytesPeeked = fileStream.readNBytes(bytesToRead);
         this.fileStream.unread(bytesPeeked);
         return bytesPeeked;
     }
