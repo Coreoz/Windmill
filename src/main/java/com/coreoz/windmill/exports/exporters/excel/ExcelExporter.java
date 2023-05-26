@@ -120,11 +120,11 @@ public class ExcelExporter<T> {
 
 		// numbers
 		if (value instanceof Integer) {
-			cell.setCellValue(Double.valueOf(((Integer) value).intValue()));
+			cell.setCellValue(Double.valueOf((Integer) value));
 		} else if (value instanceof Long) {
-			cell.setCellValue(Double.valueOf(((Long) value).longValue()));
+			cell.setCellValue(Double.valueOf((Long) value));
 		} else if (value instanceof Float) {
-			cell.setCellValue(Double.valueOf(((Float) value).floatValue()));
+			cell.setCellValue(Double.valueOf((Float) value));
 		} else if (value instanceof BigDecimal) {
 			cell.setCellValue(((BigDecimal) value).doubleValue());
 		} else if (value instanceof Double) {
@@ -132,7 +132,7 @@ public class ExcelExporter<T> {
 		}
 		// other types
 		else if (value instanceof Boolean) {
-			cell.setCellValue(((Boolean) value).booleanValue());
+			cell.setCellValue((Boolean) value);
 		} else if (value instanceof Calendar) {
 			cell.setCellValue((Calendar) value);
 		} else if (value instanceof Date) {

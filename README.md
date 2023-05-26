@@ -5,14 +5,19 @@ Windmill
 [![Coverage Status](https://coveralls.io/repos/github/Coreoz/Windmill/badge.svg?branch=master)](https://coveralls.io/github/Coreoz/Windmill?branch=master)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.coreoz/windmill/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.coreoz/windmill)
 
-Windmill is a library to parse or write Excel and CSV files through a fluent API
-that takes advantage of Java 8 Stream and Lambda features.
+Windmill is a library to parse or write Excel and CSV files through a fluent API.
 
 Windmill targets the writing/parsing of List/Collection data.
 It will especially stand out for use cases like exporting/importing a result set from/to a database.
 
 It is based on the projects [Apache POI](https://poi.apache.org/)
 and [OpenCSV](http://opencsv.sourceforge.net/) to manipulate Excel and CSV files.
+
+At least Java 11 is required from version 2.0.0, whereas in versions 1.x.x, at least Java 8 is required.
+
+Upgrade from 1.x.x to 2.x.x
+---------------------------
+See upgrade instructions in the [release details](https://github.com/Coreoz/Windmill/releases/tag/2.0.0).
 
 Getting started
 ---------------
@@ -21,7 +26,7 @@ Include Windmill in your project:
 <dependency>
   <groupId>com.coreoz</groupId>
   <artifactId>windmill</artifactId>
-  <version>1.2.0</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
@@ -54,10 +59,19 @@ Stream<Row> rowStream = Parsers
   .parse(FileSource.of(new FileInputStream("myFile.xlsx")));
 ```
 
-With CSV files, it is possible to specify multiple parameters like the charset or the escape character:
+With CSV files, it is possible to specify multiple parameters like the escape character:
 ```java
 Stream<Row> rowStream = Parsers
-  .csv(CsvParserConfig.builder().charset(StandardCharsets.UTF_8).separator(';').build())
+  .csv(CsvParserConfig.builder().separator(';').build())
+  .parse(FileSource.of(new FileInputStream("myFile.csv")));
+```
+
+The CSV parser will try to detect the encoding charset, but you can specify the fallback charset if none has been found.
+The fallback charset should always be a charset without BOM, for instance BomCharset.UTF_8_NO_BOM,
+otherwise the content of the CSV file will be stripped of the length of the BOM.
+```java
+Stream<Row> rowStream = Parsers
+  .csv(CsvParserConfig.builder().fallbackCharset(BomCharset.ISO_8859_1).build())
   .parse(FileSource.of(new FileInputStream("myFile.csv")));
 ```
 
@@ -83,6 +97,21 @@ Windmill
   .export(Arrays.asList(bean1, bean2, bean3))
   .withNoHeaderMapping(Bean::getName, bean -> bean.getUser().getLogin())
   .asCsv(ExportCsvConfig.builder().separator(';').escapeChar('"').build());
+  .toByteArray();
+```
+
+CSV Exporter will add by default an UTF-8 BOM in the file to allow reader such as Excel to detect the correct
+encoding.
+If you need to export the file without BOM, just specify an encoding charset without BOM :
+```java
+Windmill
+  .export(Arrays.asList(bean1, bean2, bean3))
+  .withNoHeaderMapping(Bean::getName, bean -> bean.getUser().getLogin())
+  .asCsv(ExportCsvConfig.builder()
+    .separator(';')
+    .escapeChar('"')
+    .charset(BomCharset.ISO_8859_1) // or BomCharset.UTF_8_NO_BOM for UTF-8
+    .build());
   .toByteArray();
 ```
 

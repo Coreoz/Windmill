@@ -1,30 +1,30 @@
 package com.coreoz.windmill.files;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
 import lombok.SneakyThrows;
 
-public class FileSource {
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.PushbackInputStream;
 
-	private final BufferedInputStream inputStream;
+public class FileSource {
+	private final PushbackInputStream bufferedStream;
 
 	private FileSource(InputStream inputStream) {
-		this.inputStream = new BufferedInputStream(inputStream);
+		this.bufferedStream = new PushbackInputStream(
+			inputStream,
+			Math.max(BomCharset.maxBomLength(), FileTypeGuesser.maxSignatureLength())
+		);
 	}
 
 	public InputStream toInputStream() {
-		return inputStream;
+		return bufferedStream;
 	}
 
 	@SneakyThrows
-	public byte[] peek(int nbBytesToRead) {
-		inputStream.mark(nbBytesToRead);
-		byte[] peeked = new byte[nbBytesToRead];
-		inputStream.read(peeked);
-		inputStream.reset();
-		return peeked;
+	public byte[] peek(int bytesToRead) {
+		byte[] bytesPeeked = bufferedStream.readNBytes(bytesToRead);
+		bufferedStream.unread(bytesPeeked);
+		return bytesPeeked;
 	}
 
 	public static FileSource of(InputStream inputStream) {
@@ -34,5 +34,4 @@ public class FileSource {
 	public static FileSource of(byte[] inputData) {
 		return of(new ByteArrayInputStream(inputData));
 	}
-
 }

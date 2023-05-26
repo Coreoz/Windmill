@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import com.coreoz.windmill.imports.FileSchema;
 import com.coreoz.windmill.imports.Row;
-import com.coreoz.windmill.utils.IteratorStreams;
+import com.coreoz.windmill.streams.IteratorStreams;
 
 class ExcelRowIterator implements Iterator<Row> {
 

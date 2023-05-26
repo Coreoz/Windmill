@@ -1,8 +1,6 @@
 package com.coreoz.windmill.exports.exporters.csv;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-
+import com.coreoz.windmill.files.BomCharset;
 import com.opencsv.CSVWriter;
 import com.opencsv.ICSVParser;
 
@@ -13,8 +11,11 @@ import lombok.Value;
 @Builder
 public class ExportCsvConfig {
 
-	/** the file charset */
-	@Builder.Default private final Charset charset = StandardCharsets.ISO_8859_1;
+	/** the file charset
+	 * Will use bom if possible
+	 * or use a BomCharset version without a BOM, for instance BomCharset.UTF_8_NO_BOM
+	*/
+	@Builder.Default private final BomCharset charset = BomCharset.UTF_8;
 	/** The delimiter to use for separating entries */
 	@Builder.Default private final char separator = ICSVParser.DEFAULT_SEPARATOR;
 	/** The character to use for quoted elements */
@@ -25,6 +26,4 @@ public class ExportCsvConfig {
 	@Builder.Default private final String lineEnd = CSVWriter.DEFAULT_LINE_END;
 	/** The boolean to use for applying or not optional wrapping quotes  */
 	@Builder.Default private final boolean applyQuotesToAll = true;
-
-
 }

@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
+import com.coreoz.windmill.files.BomCharset;
 import com.coreoz.windmill.exports.config.ExportMapping;
 import com.opencsv.CSVWriter;
 
@@ -35,12 +36,13 @@ public class CsvExporter<T> {
 	@SneakyThrows
 	public OutputStream writeTo(OutputStream outputStream) {
 		csvWriter = new CSVWriter(
-			new OutputStreamWriter(outputStream, exportConfig.getCharset()),
+			new OutputStreamWriter(outputStream, exportConfig.getCharset().getCharset()),
 			exportConfig.getSeparator(),
 			exportConfig.getQuoteChar(),
 			exportConfig.getEscapeChar(),
 			exportConfig.getLineEnd()
 		);
+		writeBom(outputStream);
 		writeRows();
 		return outputStream;
 	}
@@ -55,6 +57,14 @@ public class CsvExporter<T> {
 	}
 
 	// internals
+
+	@SneakyThrows
+	private void writeBom(OutputStream outputStream) {
+		BomCharset encodingCharset = exportConfig.getCharset();
+		if (encodingCharset != null) {
+            encodingCharset.writeBomBytes(outputStream);
+		}
+	}
 
 	private void writeRows() {
 		writeHeaderRow();

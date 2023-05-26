@@ -1,15 +1,17 @@
 package com.coreoz.windmill.imports.parsers.csv;
 
-import java.io.InputStreamReader;
-import java.util.Iterator;
-import java.util.stream.Stream;
-
+import com.coreoz.windmill.files.BomCharset;
 import com.coreoz.windmill.files.FileSource;
 import com.coreoz.windmill.imports.FileParser;
 import com.coreoz.windmill.imports.Row;
-import com.coreoz.windmill.utils.IteratorStreams;
+import com.coreoz.windmill.streams.IteratorStreams;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReaderBuilder;
+import lombok.SneakyThrows;
+
+import java.io.InputStreamReader;
+import java.util.Iterator;
+import java.util.stream.Stream;
 
 public class CsvParser implements FileParser {
 
@@ -23,9 +25,11 @@ public class CsvParser implements FileParser {
 		this.csvParserConfiguration = csvParserConfiguration;
 	}
 
+    @SneakyThrows
 	@Override
 	public Stream<Row> parse(FileSource source) {
-		InputStreamReader csvStreamReader = new InputStreamReader(source.toInputStream(), csvParserConfiguration.getCharset());
+        BomCharset charset = handleFileStreamBom(source, csvParserConfiguration.getFallbackCharset());
+		InputStreamReader csvStreamReader = new InputStreamReader(source.toInputStream(), charset.getCharset());
 		Iterator<String[]> csvRowIterator = new CSVReaderBuilder(csvStreamReader)
 			.withCSVParser(
 				new CSVParserBuilder()
@@ -47,4 +51,17 @@ public class CsvParser implements FileParser {
 			.onClose(() -> IteratorStreams.close(csvStreamReader));
 	}
 
+	/**
+	 * Detect and remove the BOM from the file stream if it exists
+	 * @return The charset found
+	 */
+	@SneakyThrows
+	private BomCharset handleFileStreamBom(FileSource source, BomCharset fallbackCharset) {
+		byte[] firstFileBytes = source.peek(BomCharset.maxBomLength());
+		BomCharset bomCharset = BomCharset.detectCharset(firstFileBytes, fallbackCharset);
+		// Try to remove the bom
+		source.toInputStream().skip(bomCharset.bomLength());
+
+		return bomCharset;
+	}
 }
