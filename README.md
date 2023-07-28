@@ -133,3 +133,46 @@ Windmill
 
 xlsxFile.write(new FileOutputStream("Export.xlsx"));
 ```
+
+CSV export with memory optimization
+-----------------------------------
+Big file exports can sometimes fill up all the JVM memory available resulting of OutOfMemory exceptions.
+
+To avoid that, it is best to use the CSV format which is a lot less memory consuming than Excel (~ 10 times more efficient).
+Then, it is also possible to avoid loading the full CSV file in memory before returning it.
+Here is a sample WS-RS API making sure all data are never fully loaded into memory:
+```java
+@GET
+public Response generateExport() {
+    // Using the StreamingOutput object to get a reference toward the output stream
+    // ready to write the HTTP response body
+    StreamingOutput fileStream = output -> {
+        try {
+            // If the data is fetched using a stream,
+            // it means the whole data set will never be loaded in memory:
+            // Windmill will stream the data along to the HTTP response output stream
+            Stream<Bean> data = fetchData();
+            Windmill
+                .export(data)
+                .withHeaderMapping(
+                    new ExportHeaderMapping<Bean>()
+                        .add("Name", Bean::getName)
+                        .add("User login", bean -> bean.getUser().getLogin())
+                )
+                .asCsv()
+                // Here the HTTP response output stream is referenced to write all the
+                // CSV lines directly in it whenever they are generated
+                .writeTo(output);
+        } catch (Exception e) {
+            logger.error("Could not generate export", e);
+            return Response.serverError().entity("Export failed").build();
+        }
+    };
+    return Response
+        .ok(fileStream, MediaType.APPLICATION_OCTET_STREAM)
+        .header("content-disposition","attachment; filename = export.csv")
+        .build();
+}
+```
+
+This behavior will be available for Excel once https://github.com/Coreoz/Windmill/issues/3 is resolved.
