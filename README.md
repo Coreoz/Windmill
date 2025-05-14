@@ -176,3 +176,9 @@ public Response generateExport() {
 ```
 
 This behavior will be available for Excel once https://github.com/Coreoz/Windmill/issues/3 is resolved.
+
+Excel customization for exports
+-------------------------------
+Windmill enables full control over Excel sheets using the included `ExcelCellStyler` feature or using Apache POI.
+
+See the [complete Excel customization for exports documentation](docs/excel-export-customization.md)
