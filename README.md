@@ -177,6 +177,33 @@ public Response generateExport() {
 
 This behavior will be available for Excel once https://github.com/Coreoz/Windmill/issues/3 is resolved.
 
+CSV export with formula sanitization
+------------------------------------
+To prevent [CSV formula injection](https://owasp.org/www-community/attacks/CSV_Injection), Windmill automatically sanitizes values starting with `=`, `+`, `-`, `@`, `\t` or `\r` by prefixing them with a single quote `'`.
+
+This behavior is enabled by default. However, if you need to export actual formulas, you can disable it globally or for specific fields:
+
+```java
+// Disable globally
+Windmill
+  .export(data)
+  .asCsv(ExportCsvConfig.builder()
+    .disableFormulasSanitization()
+    .build());
+
+// Disable for specific fields
+Windmill
+  .export(data)
+  .withHeaderMapping(
+    new ExportHeaderMapping<Bean>()
+      .add("Formula", Bean::getFormula)
+      .add("Value", Bean::getValue)
+  )
+  .asCsv(ExportCsvConfig.builder()
+    .disableFormulasSanitizationForFields("Formula")
+    .build());
+```
+
 Excel customization for exports
 -------------------------------
 Windmill enables full control over Excel sheets using the included `ExcelCellStyler` feature or using Apache POI.
